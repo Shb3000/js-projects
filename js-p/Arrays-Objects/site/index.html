@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corner Shop</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, sans-serif; background: #f4f5f7; color: #222; }
+  header { background: #2f6f4f; color: #fff; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+  header h1 { margin: 0; font-size: 22px; }
+  #cartCount { font-size: 14px; }
+  main { display: grid; grid-template-columns: 1fr 320px; gap: 20px; max-width: 1100px; margin: 20px auto; padding: 0 16px; }
+  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .toolbar input, .toolbar select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+  .toolbar input { flex: 1; min-width: 160px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+  .card { background: #fff; border-radius: 6px; padding: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.08); display: flex; flex-direction: column; gap: 6px; }
+  .card .cat { font-size: 12px; color: #888; text-transform: uppercase; }
+  .card .price { font-weight: bold; font-size: 18px; }
+  .card button { margin-top: auto; }
+  button { background: #2f6f4f; color: #fff; border: 0; border-radius: 4px; padding: 8px 12px; cursor: pointer; font-size: 14px; }
+  button:disabled { background: #bbb; cursor: not-allowed; }
+  button.small { padding: 2px 8px; }
+  button.ghost { background: #e5e7eb; color: #222; }
+  aside { background: #fff; border-radius: 6px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); align-self: start; }
+  aside h2 { margin: 0 0 10px; font-size: 18px; }
+  #cartList { list-style: none; padding: 0; margin: 0; }
+  #cartList li { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 14px; gap: 6px; }
+  .qty { display: flex; align-items: center; gap: 6px; }
+  .total { font-size: 18px; font-weight: bold; margin: 14px 0 8px; }
+  .empty { color: #888; font-size: 14px; }
+  pre { background: #1e1e1e; color: #eaeaea; padding: 10px; border-radius: 4px; font-size: 12px; overflow-x: auto; display: none; }
+  .row { display: flex; gap: 8px; margin-top: 10px; }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Corner Shop</h1>
+  <span id="cartCount"></span>
+</header>
+
+<main>
+  <section>
+    <div class="toolbar">
+      <input id="search" placeholder="Search products">
+      <select id="category">
+        <option value="all">All categories</option>
+        <option value="stationery">Stationery</option>
+        <option value="tech">Tech</option>
+        <option value="home">Home</option>
+      </select>
+      <select id="sort">
+        <option value="none">Default order</option>
+        <option value="low">Price: low to high</option>
+        <option value="high">Price: high to low</option>
+      </select>
+    </div>
+    <div id="products" class="grid"></div>
+  </section>
+
+  <aside>
+    <h2>Your cart</h2>
+    <ul id="cartList"></ul>
+    <p id="emptyMsg" class="empty">Your cart is empty.</p>
+    <p class="total">Total: <span id="total">$0.00</span></p>
+    <div class="row">
+      <button id="clearBtn" class="ghost">Clear cart</button>
+      <button id="jsonBtn" class="ghost">Show order JSON</button>
+    </div>
+    <pre id="orderJson"></pre>
+  </aside>
+</main>
+<script>
+  // products
+  const PRODUCTS = [
+    { id: 1, name: "Notebook", price: 4, category: "stationery", inStock: true },
+    { id: 2, name: "Pen", price: 1.5, category: "stationery", inStock: false },
+    { id: 3, name: "Headphones", price: 35, category: "tech", inStock: true },
+    { id: 4, name: "USB Cable", price: 6, category: "tech", inStock: true },
+    { id: 5, name: "Desk Lamp", price: 18, category: "home", inStock: true },
+    { id: 6, name: "Mug", price: 7, category: "home", inStock: true }
+  ];
+
+  const STORAGE_KEY = "corner-shop-cart";
+  let cart = loadCart();
+
+  // cart is saved as text so parse it back
+  function loadCart() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch (err) {
+      return [];
+    }
+  }
+
+  // localStorage only keeps text
+  function saveCart() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+    } catch (err) {
+      console.log("Could not save cart:", err.message);
+    }
+  }
+
+  // Filter and sort the product list based on the controls
+  function visibleProducts() {
+    const text = document.getElementById("search").value.trim().toLowerCase();
+    const category = document.getElementById("category").value;
+    const sort = document.getElementById("sort").value;
+
+    // filter returns a new array, so sorting it does not touch PRODUCTS
+    const list = PRODUCTS.filter(p =>
+      p.name.toLowerCase().includes(text) &&
+      (category === "all" || p.category === category)
+    );
+
+    if (sort === "low") list.sort((a, b) => a.price - b.price);
+    if (sort === "high") list.sort((a, b) => b.price - a.price);
+    return list;
+  }
+
+  function renderProducts() {
+    const grid = document.getElementById("products");
+    const items = visibleProducts();
+    grid.innerHTML = "";
+
+    items.forEach(({ id, name, price, category, inStock }) => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <span class="cat">${category}</span>
+        <strong>${name}</strong>
+        <span class="price">$${price.toFixed(2)}</span>
+        <button ${inStock ? "" : "disabled"} data-id="${id}">
+          ${inStock ? "Add to cart" : "Out of stock"}
+        </button>`;
+      grid.appendChild(card);
+    });
+
+    if (items.length === 0) {
+      grid.innerHTML = "<p class='empty'>No products match your search.</p>";
+    }
+  }
+
+  // Adding a product: the cart is replaced with a new array, the old one is not edited
+  function addToCart(id) {
+    const product = PRODUCTS.find(p => p.id === id);
+    const existing = cart.find(item => item.id === id);
+
+    cart = existing
+      ? cart.map(item => item.id === id ? { ...item, qty: item.qty + 1 } : item)
+      : [...cart, { id: product.id, name: product.name, price: product.price, qty: 1 }];
+
+    saveCart();
+    renderCart();
+  }
+
+  // Changing quantity: remove the item when it reaches zero
+  function changeQty(id, change) {
+    cart = cart
+      .map(item => item.id === id ? { ...item, qty: item.qty + change } : item)
+      .filter(item => item.qty > 0);
+
+    saveCart();
+    renderCart();
+  }
+
+  function renderCart() {
+    const list = document.getElementById("cartList");
+    list.innerHTML = "";
+
+    cart.forEach(({ id, name, price, qty }) => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <span>${name} - $${(price * qty).toFixed(2)}</span>
+        <span class="qty">
+          <button class="small ghost" data-minus="${id}">-</button>
+          ${qty}
+          <button class="small ghost" data-plus="${id}">+</button>
+        </span>`;
+      list.appendChild(li);
+    });
+
+    // reduce adds up the line totals
+    const total = cart.reduce((sum, { price, qty }) => sum + price * qty, 0);
+    const count = cart.reduce((n, item) => n + item.qty, 0);
+
+    document.getElementById("total").textContent = "$" + total.toFixed(2);
+    document.getElementById("cartCount").textContent = count + " item(s) in cart";
+    document.getElementById("emptyMsg").style.display = cart.length ? "none" : "block";
+    document.getElementById("orderJson").textContent = JSON.stringify(cart, null, 2);
+  }
+
+  // Event listeners
+  document.getElementById("search").addEventListener("input", renderProducts);
+  document.getElementById("category").addEventListener("change", renderProducts);
+  document.getElementById("sort").addEventListener("change", renderProducts);
+
+  document.getElementById("products").addEventListener("click", e => {
+    const id = Number(e.target.dataset.id);
+    if (id) addToCart(id);
+  });
+
+  document.getElementById("cartList").addEventListener("click", e => {
+    if (e.target.dataset.plus) changeQty(Number(e.target.dataset.plus), 1);
+    if (e.target.dataset.minus) changeQty(Number(e.target.dataset.minus), -1);
+  });
+
+  document.getElementById("clearBtn").addEventListener("click", () => {
+    cart = [];
+    saveCart();
+    renderCart();
+  });
+
+  document.getElementById("jsonBtn").addEventListener("click", () => {
+    const pre = document.getElementById("orderJson");
+    pre.style.display = pre.style.display === "block" ? "none" : "block";
+  });
+
+  renderProducts();
+  renderCart();
+</script>
+</body>
+</html>

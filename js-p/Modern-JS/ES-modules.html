@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript ES Modules Exercise</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .exercise-card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 { color: #333; }
+    h2 { color: #555; margin-top: 0; }
+    code {
+      background-color: #282c34;
+      color: #abb2bf;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    pre {
+      background-color: #282c34;
+      color: #e06c75;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    .output {
+      background-color: #2d3a4b;
+      color: #79c0ff;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    .hint {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 10px;
+      margin: 15px 0;
+      color: #856404;
+    }
+  </style>
+</head>
+<body>
+  <h1>📦 JavaScript ES Modules Exercise</h1>
+  
+  <div class="exercise-card">
+    <h2>Exercise 1: Import and Export</h2>
+    <p>Basic import and export syntax in ES modules.</p>
+    <pre>// module1.js
+export const name = 'Alice';
+export const age = 25;
+
+// main.js
+import { name, age } from './module1.js';
+console.log('Name:', name);
+console.log('Age:', age);</pre>
+    <div class="output">Output:</div>
+    <p>Name: <span id="result1name"></span>, Age: <span id="result1age"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 2: Default Export</h2>
+    <p>Use default export for a single value.</p>
+    <pre>// module2.js
+export default function greet(name) {
+  return 'Hello, ' + name + '!';
+}
+
+// main.js
+import greet from './module2.js';
+const message = greet('Bob');
+console.log('Message:', message);</pre>
+    <div class="output">Output:</div>
+    <p>Message: <span id="result2"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 3: Namespace Export</h2>
+    <p>Use namespace export for multiple values.</p>
+    <pre>// module3.js
+export const user = {
+  name: 'Charlie',
+  age: 30
+};
+
+export const email = 'charlie@example.com';
+
+// main.js
+import { user, email } from './module3.js';
+console.log('User:', user.name);
+console.log('Email:', email);</pre>
+    <div class="output">Output:</div>
+    <p>User: <span id="result3name"></span>, Email: <span id="result3email"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 4: Import with Alias</h2>
+    <p>Import with a custom alias.</p>
+    <pre>// module4.js
+export const value = 42;
+
+// main.js
+import { value as myValue } from './module4.js';
+console.log('My value:', myValue);</pre>
+    <div class="output">Output:</div>
+    <p>My value: <span id="result4"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 5: Wildcard Import</h2>
+    <p>Import everything from a module.</p>
+    <pre>// module5.js
+export const x = 1;
+export const y = 2;
+export const z = 3;
+
+// main.js
+import * as module5 from './module5.js';
+console.log('X:', module5.x);
+console.log('Y:', module5.y);
+console.log('Z:', module5.z);</pre>
+    <div class="output">Output:</div>
+    <p>X: <span id="result5x"></span>, Y: <span id="result5y"></span>, Z: <span id="result5z"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 6: Import Re-export</h2>
+    <p>Import and re-export from a module.</p>
+    <pre>// module6.js
+export const constant = 'Hello';
+
+// main.js
+import { constant } from './module6.js';
+console.log('Constant:', constant);</pre>
+    <div class="output">Output:</div>
+    <p>Constant: <span id="result6"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 7: Multiple Imports</h2>
+    <p>Import multiple modules in one file.</p>
+    <pre>import { name } from './module1.js';
+import { greet } from './module2.js';
+import { value } from './module4.js';
+
+console.log('Name:', name);
+console.log('Greeting:', greet('David'));
+console.log('Value:', value);</pre>
+    <div class="output">Output:</div>
+    <p>Name: <span id="result7name"></span>, Greeting: <span id="result7greeting"></span>, Value: <span id="result7value"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 8: Dynamic Import</h2>
+    <p>Use dynamic import to load modules on demand.</p>
+    <pre>import('./module4.js')
+  .then(module => {
+    console.log('Value:', module.value);
+  });</pre>
+    <div class="output">Output:</div>
+    <p>Value: <span id="result8"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 9: Module with Conditionals</h2>
+    <p>Create a module with conditional exports.</p>
+    <pre>// module9.js
+export function add(a, b) {
+  return a + b;
+}
+
+// main.js
+import { add } from './module9.js';
+console.log('Sum:', add(5, 3));</pre>
+    <div class="output">Output:</div>
+    <p>Sum: <span id="result9"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 10: Module with Async</h2>
+    <p>Export an async function from a module.</p>
+    <pre>// module10.js
+export async function fetchData() {
+  return new Promise(resolve => {
+    setTimeout(() => resolve('Data fetched'), 1000);
+  });
+}
+
+// main.js
+import { fetchData } from './module10.js';
+fetchData().then(data => console.log('Data:', data));</pre>
+    <div class="output">Output:</div>
+    <p>Data: <span id="result10"></span></p>
+  </div>
+
+  <script>
+    // Exercise 1
+    document.getElementById('result1name').textContent = 'Alice';
+    document.getElementById('result1age').textContent = '25';
+
+    // Exercise 2
+    document.getElementById('result2').textContent = 'Hello, Bob!';
+
+    // Exercise 3
+    document.getElementById('result3name').textContent = 'Charlie';
+    document.getElementById('result3email').textContent = 'charlie@example.com';
+
+    // Exercise 4
+    document.getElementById('result4').textContent = '42';
+
+    // Exercise 5
+    document.getElementById('result5x').textContent = '1';
+    document.getElementById('result5y').textContent = '2';
+    document.getElementById('result5z').textContent = '3';
+
+    // Exercise 6
+    document.getElementById('result6').textContent = 'Hello';
+
+    // Exercise 7
+    document.getElementById('result7name').textContent = 'Alice';
+    document.getElementById('result7greeting').textContent = 'Hello, David!';
+    document.getElementById('result7value').textContent = '42';
+
+    // Exercise 8
+    document.getElementById('result8').textContent = '42';
+
+    // Exercise 9
+    document.getElementById('result9').textContent = '8';
+
+    // Exercise 10
+    document.getElementById('result10').textContent = 'Data fetched';
+
+    // Real-life example: Music Player
+    const songs = [
+      { id: 1, title: 'Bohemian Rhapsody', artist: 'Queen', duration: 354, album: 'A Night at the Opera' },
+      { id: 2, title: 'Don\'t Stop Me Now', artist: 'Queen', duration: 237, album: 'Jazz' },
+      { id: 3, title: 'Somebody to Love', artist: 'Queen', duration: 276, album: 'A Night at the Opera' }
+    ];
+    
+    const songById = (id) => songs.find(s => s.id === id);
+    
+    const player = {
+      currentSong: null,
+      loadSong: (id) => {
+        const song = songById(id);
+        console.log('Loaded: ' + song.title + ' by ' + song.artist);
+        return song;
+      },
+      playSong: () => console.log('Playing: ' + player.currentSong?.title),
+      nextSong: () => {
+        const idx = songs.findIndex(s => s.id === player.currentSong?.id);
+        player.currentSong = songs[(idx + 1) % 3];
+      }
+    };
+
+    document.getElementById('result11title').textContent = player.loadSong(1)?.title;
+    document.getElementById('result11artist').textContent = player.loadSong(1)?.artist;
+    document.getElementById('result11duration').textContent = player.loadSong(1)?.duration;
+  </script>
+</body>
+</html>

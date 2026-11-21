@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculator</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, sans-serif; background: #eef1f4; display: flex; justify-content: center; padding: 24px 12px; }
+  .wrap { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; align-items: flex-start; }
+  .calc { background: #fff; border-radius: 10px; padding: 16px; width: 300px; box-shadow: 0 2px 6px rgba(0,0,0,.1); }
+  .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 14px; color: #555; }
+  .mode { font-size: 13px; padding: 5px 10px; border: 1px solid #bbb; border-radius: 4px; background: #f7f7f7; cursor: pointer; }
+  .display { background: #1f2937; color: #f9fafb; font-size: 30px; text-align: right; padding: 14px; border-radius: 6px; min-height: 64px; overflow: hidden; word-break: break-all; }
+  .keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
+  .keys button { padding: 14px 0; font-size: 18px; border: 0; border-radius: 6px; background: #e5e7eb; cursor: pointer; }
+  .keys button.op { background: #2f6f4f; color: #fff; }
+  .keys button.fn { background: #cbd5e1; }
+  .keys button:hover { opacity: .85; }
+  .history { width: 240px; background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,.1); }
+  .history h3 { margin: 0 0 8px; font-size: 16px; }
+  .history ol { padding-left: 18px; margin: 0; font-size: 14px; color: #444; }
+  .history .none { color: #888; font-size: 14px; }
+  .history button { margin-top: 10px; font-size: 13px; padding: 5px 10px; border: 1px solid #bbb; background: #f7f7f7; border-radius: 4px; cursor: pointer; }
+  .hint { font-size: 12px; color: #777; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="calc">
+    <div class="top">
+      <span id="modeLabel">Basic</span>
+      <button class="mode" id="modeBtn">Switch to scientific</button>
+    </div>
+    <div class="display" id="display">0</div>
+    <div class="keys" id="keys"></div>
+    <p class="hint">Keyboard works too: numbers, + - * /, Enter, Backspace, Esc.</p>
+  </div>
+
+  <div class="history">
+    <h3>History</h3>
+    <ol id="historyList"></ol>
+    <p class="none" id="historyNone">No calculations yet.</p>
+    <button id="clearHistory">Clear history</button>
+  </div>
+</div>
+
+<script>
+  // one arrow function for each operator, null = divide by zero
+  const ops = {
+    "+": (a, b) => a + b,
+    "−": (a, b) => a - b,
+    "×": (a, b) => a * b,
+    "÷": (a, b) => (b === 0 ? null : a / b)
+  };
+
+  // closure: items can only be reached through these methods
+  function createHistory(limit = 6) {
+    const items = [];
+    return {
+      add(entry) {
+        items.unshift(entry);
+        if (items.length > limit) items.pop();
+      },
+      all() {
+        return [...items];
+      },
+      clear() {
+        items.length = 0;
+      }
+    };
+  }
+
+  // 0.1 + 0.2 gives 0.30000000000000004 so round it
+  function tidy(n) {
+    return Number(n.toFixed(10));
+  }
+
+  // Class: state and behaviour live together. "this" points to the calculator object.
+  class Calculator {
+    constructor(onChange) {
+      this.onChange = onChange;
+      this.reset();
+    }
+
+    reset() {
+      this.current = "0";
+      this.previous = null;
+      this.operator = null;
+      this.fresh = true; // true means the next digit replaces the display
+    }
+
+    show() {
+      this.onChange(this.current);
+    }
+
+    pressDigit(d) {
+      if (this.fresh) {
+        this.current = d === "." ? "0." : d;
+        this.fresh = false;
+      } else if (d === "." && this.current.includes(".")) {
+        return;
+      } else {
+        this.current = this.current === "0" && d !== "." ? d : this.current + d;
+      }
+      this.show();
+    }
+
+    pressOperator(op) {
+      if (this.operator !== null && !this.fresh) this.evaluate();
+      if (this.current === "Error") return;
+      this.previous = Number(this.current);
+      this.operator = op;
+      this.fresh = true;
+      this.show();
+    }
+
+    evaluate() {
+      if (this.operator === null || this.previous === null) return;
+
+      const b = Number(this.current);
+      const result = ops[this.operator](this.previous, b);
+
+      if (result === null) {
+        this.current = "Error";
+        this.operator = null;
+        this.previous = null;
+        this.fresh = true;
+        this.show();
+        return;
+      }
+
+      const value = tidy(result);
+      historyStore.add(`${this.previous} ${this.operator} ${b} = ${value}`);
+      this.current = String(value);
+      this.operator = null;
+      this.previous = null;
+      this.fresh = true;
+      this.show();
+      renderHistory();
+    }
+
+    backspace() {
+      if (this.fresh || this.current === "Error") return;
+      this.current = this.current.slice(0, -1) || "0";
+      this.show();
+    }
+  }
+
+  // Subclass: a scientific calculator is a calculator with two extra functions
+  class ScientificCalculator extends Calculator {
+    sqrt() {
+      const n = Number(this.current);
+      this.current = n < 0 || this.current === "Error" ? "Error" : String(tidy(Math.sqrt(n)));
+      this.fresh = true;
+      this.show();
+    }
+
+    percent() {
+      if (this.current === "Error") return;
+      this.current = String(tidy(Number(this.current) / 100));
+      this.fresh = true;
+      this.show();
+    }
+  }
+
+  const historyStore = createHistory();
+  const display = document.getElementById("display");
+  let calc = null;
+  let scientific = false;
+
+  function makeCalculator(isScientific) {
+    const onChange = text => { display.textContent = text; };
+    return isScientific ? new ScientificCalculator(onChange) : new Calculator(onChange);
+  }
+
+  function renderHistory() {
+    const list = document.getElementById("historyList");
+    const entries = historyStore.all();
+    list.innerHTML = "";
+    entries.forEach(entry => {
+      const li = document.createElement("li");
+      li.textContent = entry;
+      list.appendChild(li);
+    });
+    document.getElementById("historyNone").style.display = entries.length ? "none" : "block";
+  }
+
+  // The key layout is data. The buttons are built from it.
+  const basicKeys = [
+    ["C", "⌫", "÷", "×"],
+    ["7", "8", "9", "−"],
+    ["4", "5", "6", "+"],
+    ["1", "2", "3", "="],
+    ["0", "."]
+  ];
+
+  // Scientific mode adds one extra row on top with its two functions
+  const scientificRow = ["√", "%"];
+
+  function buildKeypad() {
+    const keypad = document.getElementById("keys");
+    keypad.innerHTML = "";
+    const rows = scientific ? [scientificRow, ...basicKeys] : basicKeys;
+
+    rows.forEach(row => {
+      row.forEach(key => {
+        const btn = document.createElement("button");
+        btn.textContent = key;
+        btn.dataset.key = key;
+        if (["÷", "×", "−", "+", "="].includes(key)) btn.classList.add("op");
+        if (["C", "⌫", "%", "√"].includes(key)) btn.classList.add("fn");
+        if (key === "0") btn.style.gridColumn = "span 2";
+        keypad.appendChild(btn);
+      });
+    });
+  }
+
+  function handleKey(key) {
+    if (/^[0-9]$/.test(key) || key === ".") return calc.pressDigit(key);
+    if (key in ops) return calc.pressOperator(key);
+    if (key === "=") return calc.evaluate();
+    if (key === "C") return calc.reset();
+    if (key === "⌫") return calc.backspace();
+    if (key === "%" && scientific) return calc.percent();
+    if (key === "√" && scientific) return calc.sqrt();
+  }
+
+  // Keypad clicks: one listener on the parent (event delegation)
+  document.getElementById("keys").addEventListener("click", e => {
+    if (e.target.dataset.key) handleKey(e.target.dataset.key);
+  });
+
+  // Keyboard support
+  const keyMap = { "/": "÷", "*": "×", "-": "−", "+": "+", "Enter": "=", "Backspace": "⌫", "Escape": "C" };
+  document.addEventListener("keydown", e => {
+    const key = keyMap[e.key] || e.key;
+    if (/^[0-9.]$/.test(key) || key in ops || ["=", "⌫", "C"].includes(key)) handleKey(key);
+  });
+
+  // Mode switch: a new calculator instance, same display
+  document.getElementById("modeBtn").addEventListener("click", () => {
+    scientific = !scientific;
+    calc = makeCalculator(scientific);
+    display.textContent = "0";
+    document.getElementById("modeLabel").textContent = scientific ? "Scientific" : "Basic";
+    document.getElementById("modeBtn").textContent = scientific ? "Switch to basic" : "Switch to scientific";
+    buildKeypad();
+  });
+
+  // bind: the clear-history button calls the method with the right "this"
+  const clearHistory = () => {
+    historyStore.clear();
+    renderHistory();
+  };
+  document.getElementById("clearHistory").addEventListener("click", clearHistory);
+
+  // Hoisting: this function is declared below its first use, which works for function declarations
+  calc = makeCalculator(scientific);
+  buildKeypad();
+  renderHistory();
+</script>
+</body>
+</html>

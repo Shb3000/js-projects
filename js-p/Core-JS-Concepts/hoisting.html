@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoisting Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6f42c1 0%, #5a32d3 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 750px;
+        }
+        
+        h1 {
+            color: #6f42c1;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        .code-block .comment {
+            color: #6c757d;
+        }
+        
+        .code-block .function {
+            color: #6366f1;
+        }
+        
+        .code-block .variable {
+            color: #228be6;
+        }
+        
+        .code-block .keyword {
+            color: #dc3545;
+        }
+        
+        .output-box {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border-left: 4px solid #6f42c1;
+        }
+        
+        .output-box h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        button {
+            padding: 15px 25px;
+            border: 2px solid #6f42c1;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background: #6f42c1;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .explanation {
+            background: #e8f4fd;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            color: #333;
+            line-height: 1.8;
+        }
+        
+        .explanation h3 {
+            color: #6f42c1;
+            margin-bottom: 15px;
+        }
+        
+        .explanation code {
+            background: #6c757d;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hoisting Practice</h1>
+        <p>Discover how JavaScript hoists variable declarations and function declarations to the top of their scope!</p>
+        
+        <div class="btn-group">
+            <button onclick="runExample1()">Example 1: var Hoisting</button>
+            <button onclick="runExample2()">Example 2: let Hoisting</button>
+            <button onclick="runExample3()">Example 3: const Hoisting</button>
+            <button onclick="runExample4()">Example 4: Function Hoisting</button>
+            <button onclick="runExample5()">Example 5: Arrow Function Hoisting</button>
+            <button onclick="runExample6()">Example 6: var vs let vs const</button>
+        </div>
+        
+        <div id="output" class="output-box">
+            <h3>Click a button to see different hoisting examples!</h3>
+            <p>Hover over the code to see what happens when you try to use variables before they're declared.</p>
+        </div>
+        
+        <div class="explanation">
+            <h3>📚 What is Hoisting?</h3>
+            <p>
+                <strong>Hoisting</strong> is a JavaScript mechanism where variable and function declarations are moved to the top of their 
+                scope before any code is executed. This happens automatically by the JavaScript engine.
+            </p>
+            <p>
+                <strong>Important Rules:</strong>
+                <br>
+                <code>var</code> - Hoisted and initialized with <code>undefined</code><br>
+                <code>let</code> - Hoisted but <strong>not</strong> initialized (Temporal Dead Zone - TDZ)<br>
+                <code>const</code> - Hoisted but <strong>not</strong> initialized (TDZ)<br>
+                Function declarations - Fully hoisted (can be called before declaration)<br>
+                Function expressions - Not hoisted (cannot be called before assignment)
+            </p>
+        </div>
+        
+        <div class="code-block">
+            <span class="comment">// Code examples will appear here...</span>
+        </div>
+    </div>
+    
+    <script>
+        // Example 1: var hoisting
+        function runExample1() {
+            const code = `
+<span class="comment">// Example 1: var hoisting</span>
+console.log(x); // outputs: undefined
+var x = 10;
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: ${10}</strong><br>
+                               <code>x</code> is hoisted to <code>undefined</code>, but the assignment happens after the log.<br>
+                               This is called <strong>Variable Hoisting</strong>. The variable exists but is <code>undefined</code> before assignment.`;
+        }
+        
+        // Example 2: let hoisting
+        function runExample2() {
+            const code = `
+<span class="comment">// Example 2: let hoisting (TDZ)</span>
+console.log(y); // ReferenceError
+let y = 20;
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: ReferenceError</strong><br>
+                               <code>y</code> is hoisted but <strong>not initialized</strong>. You can't access it before assignment.<br>
+                               This is called the <strong>Temporal Dead Zone (TDZ)</strong>.`;
+        }
+        
+        // Example 3: const hoisting
+        function runExample3() {
+            const code = `
+<span class="comment">// Example 3: const hoisting (TDZ)</span>
+console.log(z); // ReferenceError
+const z = 30;
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: ReferenceError</strong><br>
+                               <code>z</code> is hoisted but <strong>not initialized</strong>. Same TDZ as <code>let</code>.<br>
+                               You cannot use <code>const</code> before assignment.`;
+        }
+        
+        // Example 4: Function hoisting
+        function runExample4() {
+            const code = `
+<span class="comment">// Example 4: Function declaration hoisting</span>
+sayHello(); // works!
+function sayHello() {
+    console.log('Hello!');
+}
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "Hello!" printed</strong><br>
+                               Function declarations are <strong>fully hoisted</strong>. You can call them before declaration.<br>
+                               This is different from <code>var</code>, <code>let</code>, and <code>const</code>.`;
+        }
+        
+        // Example 5: Arrow function hoisting
+        function runExample5() {
+            const code = `
+<span class="comment">// Example 5: Arrow function hoisting</span>
+useFunc(); // ReferenceError
+let useFunc = function() {
+    console.log('Called!');
+};
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: ReferenceError</strong><br>
+                               Arrow function <strong>expressions</strong> are <strong>not hoisted</strong>.<br>
+                               You must assign the function to a variable before calling it.`;
+        }
+        
+        // Example 6: var vs let vs const
+        function runExample6() {
+            const code = `
+<span class="comment">// Example 6: var vs let vs const</span>
+console.log(a); // undefined
+var a = 100;
+
+console.log(b); // ReferenceError
+let b = 200;
+
+console.log(c); // ReferenceError
+const c = 300;
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Results:</strong><br>
+                               <code>a</code>: <strong>undefined</strong> (hoisted and initialized)<br>
+                               <code>b</code>: <strong>ReferenceError</strong> (TDZ)<br>
+                               <code>c</code>: <strong>ReferenceError</strong> (TDZ)<br>
+                               
+                               <strong>Key takeaway:</strong> Only <code>var</code> is hoisted with initialization!`;
+        }
+        
+        // Additional examples
+        function runExample7() {
+            const code = `
+<span class="comment">// Example 7: Block-level scope with let/const</span>
+console.log(d); // ReferenceError
+{
+    let d = 400;
+}
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: ReferenceError</strong><br>
+                               <code>let</code> and <code>const</code> have <strong>block-level scope</strong>, but still have TDZ.<br>
+                               You can't access them before they're declared within the block.`;
+        }
+        
+        function runExample8() {
+            const code = `
+<span class="comment">// Example 8: var is function-scoped</span>
+console.log(e); // undefined
+if (false) {
+    var e = 500;
+}
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: ${500}</strong><br>
+                               <code>var</code> is <strong>function-scoped</strong>, not block-scoped.<br>
+                               The variable is hoisted to the function scope, not the if-block.`;
+        }
+        
+        // Run all examples on page load
+        window.addEventListener('load', () => {
+            // Run examples to show results
+            runExample1();
+            runExample2();
+            runExample3();
+            runExample4();
+            runExample5();
+            runExample6();
+            // Store the results for display
+            const results = [
+                { title: 'Example 1: var hoisting', result: '10' },
+                { title: 'Example 2: let hoisting', result: 'ReferenceError' },
+                { title: 'Example 3: const hoisting', result: 'ReferenceError' },
+                { title: 'Example 4: Function hoisting', result: 'Hello!' },
+                { title: 'Example 5: Arrow function hoisting', result: 'ReferenceError' },
+                { title: 'Example 6: var vs let vs const', result: 'Mixed' }
+            ];
+            
+            // Show initial results
+            let count = 0;
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach((btn, index) => {
+                if (results[index]) {
+                    setTimeout(() => {
+                        const example = results[index];
+                        const title = btn.textContent.trim().split(':')[1];
+                        const result = document.getElementById('output');
+                        result.innerHTML = `<strong>${example.title}:</strong> ${example.result}<br>`;
+                    }, count * 100);
+                    count++;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

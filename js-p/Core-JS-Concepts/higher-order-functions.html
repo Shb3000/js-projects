@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Higher-Order Functions Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+        }
+        
+        h1 {
+            color: #11998e;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .demo-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border-left: 4px solid #11998e;
+        }
+        
+        .demo-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(17, 153, 142, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+        
+        .output {
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+            margin-top: 15px;
+        }
+        
+        .output strong {
+            color: #007bff;
+        }
+        
+        .output code {
+            background: #dee2e6;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .explanation {
+            margin-top: 20px;
+            padding: 20px;
+            background: #d4edda;
+            border-radius: 10px;
+            color: #155724;
+            line-height: 1.6;
+        }
+        
+        code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Higher-Order Functions Practice</h1>
+        <p>Learn how functions can accept other functions as arguments and return functions!</p>
+        
+        <div class="demo-section">
+            <h3>Example 1: setTimeout with Callback Function</h3>
+            <button class="btn btn-primary" onclick="runExample1()">Run setTimeout Example</button>
+            <div id="output1" class="output"></div>
+        </div>
+        
+        <div class="demo-section">
+            <h3>Example 2: Array.map with Arrow Function</h3>
+            <button class="btn btn-primary" onclick="runExample2()">Run map Example</button>
+            <div id="output2" class="output"></div>
+        </div>
+        
+        <div class="demo-section">
+            <h3>Example 3: Array.filter with Function</h3>
+            <button class="btn btn-primary" onclick="runExample3()">Run filter Example</button>
+            <div id="output3" class="output"></div>
+        </div>
+        
+        <div class="demo-section">
+            <h3>Example 4: createGreeting Function</h3>
+            <button class="btn btn-secondary" onclick="runExample4()">Create Greeting Function</button>
+            <div id="output4" class="output"></div>
+        </div>
+        
+        <div class="demo-section">
+            <h3>Example 5: Multiple Higher-Order Functions</h3>
+            <button class="btn btn-primary" onclick="runExample5()">Run Complex Example</button>
+            <div id="output5" class="output"></div>
+        </div>
+        
+        <div class="explanation">
+            <h3>💡 Key Concepts</h3>
+            <p>
+                <strong>Higher-Order Functions (HOFs)</strong> are functions that either accept other functions as arguments, 
+                return functions as values, or both. They're a fundamental concept in JavaScript that enables 
+                powerful patterns like callbacks, closures, and functional programming.
+            </p>
+            <p>
+                <strong>Common HOFs in JavaScript:</strong>
+                <br>
+                <code>map()</code> - Applies function to each element<br>
+                <code>filter()</code> - Filters elements based on condition<br>
+                <code>reduce()</code> - Reduces array to single value<br>
+                <code>forEach()</code> - Executes function for each element<br>
+                <code>setTimeout()</code> - Executes function after delay<br>
+                <code>setInterval()</code> - Repeatedly executes function
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // Example 1: setTimeout with callback
+        function runExample1() {
+            const output = document.getElementById('output1');
+            
+            setTimeout(() => {
+                output.innerHTML = '<strong>setTimeout executed after 2 seconds!</strong>';
+            }, 2000);
+            
+            output.innerHTML = '<strong>Waiting 2 seconds...</strong><br>Function passed as argument to setTimeout. The callback function runs after the delay.';
+        }
+        
+        // Example 2: Array.map
+        function runExample2() {
+            const output = document.getElementById('output2');
+            
+            const numbers = [1, 2, 3, 4, 5];
+            
+            // Using arrow function as callback
+            const squared = numbers.map(num => num * num);
+            
+            output.innerHTML = `<strong>Original: [${numbers.join(', ')}]<br>
+                                Squared: [${squared.join(', ')}]`;
+        }
+        
+        // Example 3: Array.filter
+        function runExample3() {
+            const output = document.getElementById('output3');
+            
+            const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            
+            // Using function as callback
+            const evens = numbers.filter(num => num % 2 === 0);
+            
+            output.innerHTML = `<strong>Original: [${numbers.join(', ')}]<br>
+                                Even numbers only: [${evens.join(', ')}]`;
+        }
+        
+        // Example 4: Creating a function that returns a function
+        function runExample4() {
+            const output = document.getElementById('output4');
+            
+            // Function that returns another function
+            function createGreeting(message) {
+                return function(name) {
+                    return `${message}, ${name}!`;
+                };
+            }
+            
+            const greetHello = createGreeting('Hello');
+            const greetGoodbye = createGreeting('Goodbye');
+            
+            output.innerHTML = `<strong>Created greeting functions:</strong><br>
+                                <code>${greetHello('Alice')}</code><br>
+                                <code>${greetHello('Bob')}</code><br>
+                                <code>${greetGoodbye('Charlie')}</code>`;
+        }
+        
+        // Example 5: Using reduce with HOF
+        function runExample5() {
+            const output = document.getElementById('output5');
+            
+            const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            
+            // First filter, then map, then reduce
+            const evens = numbers.filter(n => n % 2 === 0);
+            const doubled = evens.map(n => n * 2);
+            const sum = doubled.reduce((total, num) => total + num, 0);
+            
+            output.innerHTML = `<strong>Step 1 - Filter evens: [${evens.join(', ')}]<br>
+                                Step 2 - Double them: [${doubled.join(', ')}]<br>
+                                Step 3 - Sum: ${sum}`;
+        }
+        
+        // Example 6: Using forEach with HOF
+        function runExample6() {
+            const output = document.getElementById('output6');
+            
+            const numbers = [1, 2, 3, 4, 5];
+            
+            // Using arrow function as callback in forEach
+            const result = [];
+            numbers.forEach(num => {
+                result.push(num + num);
+            });
+            
+            output.innerHTML = `<strong>Original: [${numbers.join(', ')}]<br>
+                                Doubled: [${result.join(', ')}]`;
+        }
+        
+        // Example 7: Using a function as argument
+        function runExample7() {
+            const output = document.getElementById('output7');
+            
+            function countDown(seconds, callback) {
+                let count = seconds;
+                
+                while (count > 0) {
+                    console.log(`Count: ${count}`);
+                    callback();
+                    count--;
+                }
+                
+                console.log('Count down complete!');
+            }
+            
+            countDown(5, () => {
+                output.innerHTML = '<strong>Count down reached 0!'</strong>';
+            });
+        }
+    </script>
+</body>
+</html>

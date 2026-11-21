@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Focus Timer</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, sans-serif; background: #f3f4f6; color: #222; }
+  header { background: #7c3f2a; color: #fff; padding: 14px 24px; }
+  header h1 { margin: 0; font-size: 20px; }
+  main { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 980px; margin: 18px auto; padding: 0 16px; }
+  .panel { background: #fff; border-radius: 8px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .panel h2 { margin: 0 0 12px; font-size: 17px; }
+  .clock { font-size: 64px; text-align: center; font-variant-numeric: tabular-nums; margin: 10px 0; }
+  .phase { text-align: center; font-size: 15px; color: #7c3f2a; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+  .settings { display: flex; gap: 12px; justify-content: center; margin: 12px 0; font-size: 14px; }
+  .settings input { width: 70px; padding: 6px; border: 1px solid #ccc; border-radius: 4px; }
+  .buttons { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  button { background: #7c3f2a; color: #fff; border: 0; border-radius: 4px; padding: 9px 14px; cursor: pointer; font-size: 14px; }
+  button.ghost { background: #e5e7eb; color: #222; }
+  button:disabled { background: #bbb; cursor: not-allowed; }
+  .stats { text-align: center; margin-top: 12px; font-size: 14px; color: #555; }
+  #log { list-style: none; padding: 0; margin: 0; max-height: 260px; overflow-y: auto; font-family: Consolas, monospace; font-size: 13px; }
+  #log li { padding: 5px 0; border-bottom: 1px solid #eee; }
+  .bar { height: 12px; background: #e5e7eb; border-radius: 6px; overflow: hidden; margin: 10px 0; }
+  .bar div { height: 100%; width: 0; background: #7c3f2a; transition: width .2s; }
+  .note { font-size: 13px; color: #666; margin-top: 8px; }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Focus Timer</h1>
+</header>
+
+<main>
+  <section class="panel">
+    <h2>Pomodoro</h2>
+    <p class="phase" id="phase">Idle</p>
+    <div class="clock" id="clock">25:00</div>
+    <div class="settings">
+      <label>Focus (min) <input id="workMin" type="number" min="1" value="25"></label>
+      <label>Break (min) <input id="breakMin" type="number" min="1" value="5"></label>
+    </div>
+    <div class="buttons">
+      <button id="startBtn">Start</button>
+      <button id="skipBtn" class="ghost" disabled>Skip</button>
+      <button id="stopBtn" class="ghost" disabled>Stop</button>
+    </div>
+    <p class="stats" id="stats">Completed focus sessions: 0</p>
+    <p class="note">The clock is based on the real time, so it stays right even if the tab is in the background for a while.</p>
+  </section>
+
+  <section class="panel">
+    <h2>Event log</h2>
+    <div class="buttons" style="margin-bottom: 10px;">
+      <button id="orderBtn" class="ghost">Show event order</button>
+    </div>
+    <ul id="log"></ul>
+  </section>
+
+  <section class="panel" style="grid-column: 1 / -1;">
+    <h2>Background job (does not freeze the page)</h2>
+    <p class="note">Counts through 300,000 items in small pieces. Move the mouse or type while it runs. The page stays responsive because each piece gives control back to the browser.</p>
+    <div class="buttons" style="margin: 10px 0;">
+      <button id="jobBtn">Start job</button>
+    </div>
+    <div class="bar"><div id="jobBar"></div></div>
+    <p class="stats" id="jobStatus">Not started</p>
+  </section>
+</main>
+<script>
+  const $ = id => document.getElementById(id);
+
+  let running = false;   // is the timer going
+  let sessions = 0;      // completed focus sessions
+  let active = null;     // the phase running right now
+
+  function logLine(text) {
+    const li = document.createElement("li");
+    li.textContent = new Date().toLocaleTimeString() + "  " + text;
+    $("log").prepend(li);
+  }
+
+  function showClock(ms) {
+    const total = Math.max(0, Math.ceil(ms / 1000));
+    const mm = String(Math.floor(total / 60)).padStart(2, "0");
+    const ss = String(total % 60).padStart(2, "0");
+    $("clock").textContent = mm + ":" + ss;
+  }
+
+  function setButtons() {
+    $("startBtn").disabled = running;
+    $("skipBtn").disabled = !running;
+    $("stopBtn").disabled = !running;
+  }
+
+  // resolves when time runs out, or when skip / stop is pressed
+  // setInterval does not block the page, so the buttons keep working while it counts.
+  function runPhase(minutes) {
+    return new Promise(resolve => {
+      const endAt = Date.now() + minutes * 60 * 1000;
+      const intervalId = setInterval(update, 250);
+
+      function finish(result) {
+        clearInterval(intervalId);
+        active = null;
+        resolve(result);
+      }
+
+      function update() {
+        const left = endAt - Date.now();
+        if (left <= 0) {
+          showClock(0);
+          finish("done");
+        } else {
+          showClock(left);
+        }
+      }
+
+      active = { finish };
+      update();
+    });
+  }
+
+  // async/await: the cycle reads like steps, even though each step waits for a timer
+  async function startCycle() {
+    if (running) return;
+    running = true;
+    setButtons();
+
+    const workMinutes = Math.max(1, Number($("workMin").value) || 25);
+    const breakMinutes = Math.max(1, Number($("breakMin").value) || 5);
+
+    while (running) {
+      $("phase").textContent = "Focus";
+      logLine("Focus started (" + workMinutes + " min)");
+      const focus = await runPhase(workMinutes);
+      if (!running) break;
+
+      if (focus === "done") {
+        sessions++;
+        $("stats").textContent = "Completed focus sessions: " + sessions;
+      }
+      logLine("Focus " + focus);
+
+      $("phase").textContent = "Break";
+      logLine("Break started (" + breakMinutes + " min)");
+      const rest = await runPhase(breakMinutes);
+      if (!running) break;
+      logLine("Break " + rest);
+    }
+
+    $("phase").textContent = "Idle";
+    showClock(workMinutes * 60 * 1000);
+    setButtons();
+  }
+
+  function stopCycle() {
+    running = false;
+    if (active) active.finish("stopped");
+    logLine("Timer stopped");
+    setButtons();
+  }
+
+  $("startBtn").addEventListener("click", startCycle);
+  $("stopBtn").addEventListener("click", stopCycle);
+  $("skipBtn").addEventListener("click", () => {
+    if (active) active.finish("skipped");
+  });
+
+  // Event loop demo. Order: sync code, then microtasks (promises), then the timer callback.
+  $("orderBtn").addEventListener("click", () => {
+    const order = [];
+    order.push("1. script runs (sync)");
+
+    setTimeout(() => order.push("5. setTimeout (task queue)"), 0);
+
+    Promise.resolve().then(() => order.push("3. promise callback (microtask)"));
+    queueMicrotask(() => order.push("4. queueMicrotask (microtask)"));
+
+    order.push("2. script ends (sync)");
+
+    // Check after the timer has had a chance to run
+    setTimeout(() => logLine(order.join("  ->  ")), 50);
+  });
+
+  // Chunked job: pieces of work, with a yield back to the browser between pieces.
+  // A plain for-loop of 300,000 steps would freeze the page until it finished.
+  const nextTick = () => new Promise(resolve => setTimeout(resolve, 0));
+
+  async function runJob(total) {
+    const chunk = 10000;
+    let done = 0;
+    let sum = 0;
+
+    for (let i = 0; i < total; i++) {
+      sum += i;
+      done++;
+      if (done % chunk === 0) {
+        $("jobBar").style.width = Math.round((done / total) * 100) + "%";
+        $("jobStatus").textContent = "Working... " + done.toLocaleString() + " / " + total.toLocaleString();
+        await nextTick();
+      }
+    }
+
+    $("jobBar").style.width = "100%";
+    $("jobStatus").textContent = "Finished. Sum = " + sum.toLocaleString();
+  }
+
+  $("jobBtn").addEventListener("click", () => {
+    $("jobBtn").disabled = true;
+    $("jobBar").style.width = "0%";
+    runJob(300000).finally(() => {
+      $("jobBtn").disabled = false;
+    });
+  });
+
+  showClock(Number($("workMin").value) * 60 * 1000);
+  setButtons();
+</script>
+</body>
+</html>

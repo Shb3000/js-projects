@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destructuring Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 750px;
+        }
+        
+        h1 {
+            color: #6c757d;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .example-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid #6c757d;
+        }
+        
+        .example-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .code-block .function {
+            color: #6366f1;
+        }
+        
+        .code-block .variable {
+            color: #228be6;
+        }
+        
+        .code-block .keyword {
+            color: #dc3545;
+        }
+        
+        .output {
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .output strong {
+            color: #6c757d;
+        }
+        
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        button {
+            padding: 15px 25px;
+            border: 2px solid #6c757d;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background: #6c757d;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .info-box {
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            color: #383d41;
+            line-height: 1.8;
+        }
+        
+        .info-box h3 {
+            color: #383d41;
+            margin-bottom: 15px;
+        }
+        
+        .info-box code {
+            background: #6c757d;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Destructuring Practice</h1>
+        <p>Learn how to extract values from arrays and objects using destructuring syntax!</p>
+        
+        <div class="btn-group">
+            <button onclick="runExample1()">Example 1: Basic Array Destructuring</button>
+            <button onclick="runExample2()">Example 2: Basic Object Destructuring</button>
+            <button onclick="runExample3()">Example 3: Nested Destructuring</button>
+            <button onclick="runExample4()">Example 4: Default Values</button>
+            <button onclick="runExample5()">Example 5: Renaming Variables</button>
+            <button onclick="runExample6()">Example 6: Combining Arrays and Objects</button>
+        </div>
+        
+        <div id="output" class="output">
+            <strong>Click a button to see destructuring examples!</strong>
+        </div>
+        
+        <div class="info-box">
+            <h3>🔧 What is Destructuring?</h3>
+            <p>
+                Destructuring is a JavaScript feature that lets you unpack values from arrays or properties from objects into separate variables. It makes your code cleaner and more readable.
+            </p>
+            <ul>
+                <li><strong>Array destructuring:</strong> <code>[a, b, c] = [1, 2, 3]</code> sets a=1, b=2, c=3</li>
+                <li><strong>Object destructuring:</strong> <code>{a, b} = {a: 1, b: 2}</code> sets a=1, b=2</li>
+                <li><strong>Nested destructuring:</strong> Extract values from nested objects/arrays</li>
+                <li><strong>Default values:</strong> Provide fallback when a value is missing</li>
+                <li><strong>Renaming:</strong> Use alias to rename the extracted variable</li>
+            </ul>
+        </div>
+        
+        <div class="code-block">
+            <span class="comment">// Examples will appear here...</span>
+        </div>
+        
+        <div class="example-section">
+            <h3>🏪 Real-Life Example: Restaurant Ordering System</h3>
+            <p>
+                Imagine a restaurant's order-taking system. When a server receives an order from a customer, they might order multiple dishes. Using destructuring makes it easy to extract individual items from the order array.
+            </p>
+            <div class="code-block">
+                <span class="comment">// Restaurant Order Example</span>
+                const order = {
+                    restaurant: "Burger King",
+                    order: [
+                        { name: "Big Mac", price: 5.99, qty: 2 },
+                        { name: "Fries", price: 2.49, qty: 1 },
+                        { name: "Coke", price: 1.99, qty: 2 }
+                    ]
+                };
+                
+                // Destructure the order data
+                const { restaurant, order: dishes } = order;
+                const [firstDish, secondDish, thirdDish] = dishes;
+                
+                console.log(restaurant);      // "Burger King"
+                console.log(firstDish.name); // "Big Mac"
+                console.log(thirdDish.name); // "Coke"
+            </div>
+            <p>
+                <strong>Why use it?</strong> When you're working with restaurant orders from multiple tables, you often need to extract specific pieces of information. Destructuring lets you do this cleanly without creating multiple temporary variables.
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // Example 1: Basic Array Destructuring
+        function runExample1() {
+            const code = `
+<span class="comment">// Example 1: Basic Array Destructuring</span>
+const numbers = [10, 20, 30, 40];
+const [first, second, third, fourth] = numbers;
+
+console.log(first);   // 10
+console.log(second);  // 20
+console.log(third);   // 30
+console.log(fourth);  // 40
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Results: 10, 20, 30, 40</strong><br>
+                               Simple array destructuring extracts values into separate variables.`;
+        }
+        
+        // Example 2: Basic Object Destructuring
+        function runExample2() {
+            const code = `
+<span class="comment">// Example 2: Basic Object Destructuring</span>
+const user = {
+    name: 'Alice',
+    age: 25,
+    city: 'New York'
+};
+
+const { name, age, city } = user;
+
+console.log(name);  // "Alice"
+console.log(age);   // 25
+console.log(city);  // "New York"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Results: "Alice", 25, "New York"</strong><br>
+                               Object destructuring extracts properties into separate variables.`;
+        }
+        
+        // Example 3: Nested Destructuring
+        function runExample3() {
+            const code = `
+<span class="comment">// Example 3: Nested Destructuring</span>
+const person = {
+    name: 'Bob',
+    age: 30,
+    address: {
+        city: 'Boston',
+        zip: '02101'
+    }
+};
+
+const { name, age, address: { city, zip } } = person;
+
+console.log(name);   // "Bob"
+console.log(city);   // "Boston"
+console.log(zip);    // "02101"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Results: "Bob", "Boston", "02101"</strong><br>
+                               Nested destructuring extracts values from nested objects/arrays.`;
+        }
+        
+        // Example 4: Default Values
+        function runExample4() {
+            const code = `
+<span class="comment">// Example 4: Default Values</span>
+const colors = ['red', 'blue'];
+const [first, second, third = 'green'] = colors;
+
+console.log(first);   // "red"
+console.log(second);  // "blue"
+console.log(third);   // "green" (default value)
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Results: "red", "blue", "green"</strong><br>
+                               Default values are used when an array/object doesn't have enough elements.`;
+        }
+        
+        // Example 5: Renaming Variables
+        function runExample5() {
+            const code = `
+<span class="comment">// Example 5: Renaming Variables</span>
+const user = {
+    firstName: 'Charlie',
+    lastName: 'Davis',
+    email: 'charlie@example.com'
+};
+
+const { firstName: first, lastName: last, email: mail } = user;
+
+console.log(first);     // "Charlie"
+console.log(last);      // "Davis"
+console.log(mail);      // "charlie@example.com"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Results: "Charlie", "Davis", "charlie@example.com"</strong><br>
+                               The alias syntax lets you rename the extracted variables.`;
+        }
+        
+        // Example 6: Combining Arrays and Objects
+        function runExample6() {
+            const code = `
+<span class="comment">// Example 6: Combining Arrays and Objects</span>
+const mixed = {
+    name: 'Diana',
+    age: 28,
+    tags: ['developer', 'designer'],
+    score: 95
+};
+
+const { name, age, ...rest } = mixed;
+const [tag1, tag2] = rest.tags;
+
+console.log(name);    // "Diana"
+console.log(age);     // 28
+console.log(tag1);    // "developer"
+console.log(tag2);    // "designer"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Results: "Diana", 28, "developer", "designer"</strong><br>
+                               Spread operator (...) removes properties from an object.`;
+        }
+        
+        // Additional examples
+        function runExample7() {
+            const code = `
+<span class="comment">// Example 7: Destructuring with Functions</span>
+function createPerson(name, age, city) {
+    return { name, age, city };
+}
+
+const { name, age } = createPerson('Eve', 22, 'Seattle');
+console.log(name); // "Eve"
+console.log(age);  // 22
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Results: "Eve", 22</strong><br>
+                               You can return destructured objects from functions.`;
+        }
+        
+        // Run all examples
+        const examples = [
+            { fn: runExample1, title: 'Example 1: Basic Array Destructuring' },
+            { fn: runExample2, title: 'Example 2: Basic Object Destructuring' },
+            { fn: runExample3, title: 'Example 3: Nested Destructuring' },
+            { fn: runExample4, title: 'Example 4: Default Values' },
+            { fn: runExample5, title: 'Example 5: Renaming Variables' },
+            { fn: runExample6, title: 'Example 6: Combining Arrays and Objects' },
+            { fn: runExample7, title: 'Example 7: Destructuring with Functions' }
+        ];
+        
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                const example = examples.find(ex => ex.title === btn.textContent.trim());
+                if (example) {
+                    example.fn();
+                }
+            });
+        });
+        
+        // Run all examples on page load
+        window.addEventListener('load', () => {
+            let count = 0;
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach((btn, index) => {
+                if (examples[index]) {
+                    setTimeout(() => {
+                        const example = examples[index];
+                        const title = btn.textContent.trim().split(':')[1];
+                        const output = document.getElementById('output');
+                        output.innerHTML = `<strong>${title}:</strong> See code block for details...`;
+                    }, count * 200);
+                    count++;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

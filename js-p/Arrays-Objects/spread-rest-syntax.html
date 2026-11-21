@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spread and Rest Syntax Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 750px;
+        }
+        
+        h1 {
+            color: #f39c12;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .example-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid #f39c12;
+        }
+        
+        .example-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .code-block .function {
+            color: #6366f1;
+        }
+        
+        .code-block .variable {
+            color: #228be6;
+        }
+        
+        .code-block .keyword {
+            color: #dc3545;
+        }
+        
+        .output {
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .output strong {
+            color: #f39c12;
+        }
+        
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        button {
+            padding: 15px 25px;
+            border: 2px solid #f39c12;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background: #f39c12;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .info-box {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            color: #856404;
+            line-height: 1.8;
+        }
+        
+        .info-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .info-box code {
+            background: #f39c12;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Spread and Rest Syntax Practice</h1>
+        <p>Learn how to expand arrays/objects (spread) and collect them into arrays/objects (rest)!</p>
+        
+        <div class="btn-group">
+            <button onclick="runExample1()">Example 1: Spread in Function Call</button>
+            <button onclick="runExample2()">Example 2: Rest in Function Definition</button>
+            <button onclick="runExample3()">Example 3: Spread in Array</button>
+            <button onclick="runExample4()">Example 4: Rest in Object</button>
+            <button onclick="runExample5()">Example 5: Spread in Object</button>
+            <button onclick="runExample6()">Example 6: Combining Spread and Rest</button>
+        </div>
+        
+        <div id="output" class="output">
+            <strong>Click a button to see spread and rest syntax examples!</strong>
+        </div>
+        
+        <div class="info-box">
+            <h3>🔧 Understanding Spread and Rest</h3>
+            <p>
+                <strong>Spread operator (...):</strong> Expands an array/object into individual elements<br>
+                <strong>Rest operator (...):</strong> Collects individual elements into an array/object
+            </p>
+            <ul>
+                <li><strong>Spread in function:</strong> <code>func(a, b, c)</code> becomes <code>func(...arr)</code></li>
+                <li><strong>Rest in function:</strong> <code>function(a, ...rest)</code> collects remaining arguments</li>
+                <li><strong>Spread in array:</strong> <code>[...arr1, ...arr2]</code> combines arrays</li>
+                <li><strong>Rest in object:</strong> <code>{...obj1, ...obj2}</code> merges objects</li>
+                <li><strong>Spread in object:</strong> <code>{key1, ...obj, key2}</code> adds properties</li>
+            </ul>
+        </div>
+        
+        <div class="code-block">
+            <span class="comment">// Examples will appear here...</span>
+        </div>
+    </div>
+    
+    <script>
+        // Example 1: Spread in Function Call
+        function runExample1() {
+            const code = `
+<span class="comment">// Example 1: Spread in Function Call</span>
+function add(a, b, c) {
+    console.log(a + b + c);
+}
+
+const nums = [1, 2, 3];
+add(10, 20, 30); // 60
+add(...nums);     // 60
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Results: 60, 60</strong><br>
+                               <code>...nums</code> spreads the array into individual arguments.`;
+        }
+        
+        // Example 2: Rest in Function Definition
+        function runExample2() {
+            const code = `
+<span class="comment">// Example 2: Rest in Function Definition</span>
+function sum(first, ...rest) {
+    console.log(first + rest.reduce((a, b) => a + b, 0));
+}
+
+sum(1, 2, 3, 4, 5); // 15
+sum(10);            // 10
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Results: 15, 10</strong><br>
+                               <code>...rest</code> collects all remaining arguments into an array.`;
+        }
+        
+        // Example 3: Spread in Array
+        function runExample3() {
+            const code = `
+<span class="comment">// Example 3: Spread in Array</span>
+const arr1 = [1, 2, 3];
+const arr2 = [4, 5, 6];
+
+const combined = [...arr1, ...arr2];
+console.log(combined); // [1, 2, 3, 4, 5, 6]
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: [1, 2, 3, 4, 5, 6]</strong><br>
+                               <code>...arr1, ...arr2</code> combines the arrays into one.`;
+        }
+        
+        // Example 4: Rest in Object
+        function runExample4() {
+            const code = `
+<span class="comment">// Example 4: Rest in Object</span>
+function createPerson(first, ...rest) {
+    return { firstName: first, ...rest };
+}
+
+const person = createPerson('John', 25, 'New York');
+console.log(person); // { firstName: 'John', age: 25, city: 'New York' }
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: { firstName: "John", age: 25, city: "New York" }</strong><br>
+                               <code>...rest</code> collects remaining arguments into an object.`;
+        }
+        
+        // Example 5: Spread in Object
+        function runExample5() {
+            const code = `
+<span class="comment">// Example 5: Spread in Object</span>
+const person1 = { name: 'Alice', age: 25 };
+const person2 = { city: 'Boston', zip: '02101' };
+
+const person3 = { ...person1, ...person2 };
+console.log(person3); // { name: 'Alice', age: 25, city: 'Boston', zip: '02101' }
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: { name: "Alice", age: 25, city: "Boston", zip: "02101" }</strong><br>
+                               <code>{...person1, ...person2}</code> spreads objects to add/merge properties.`;
+        }
+        
+        // Example 6: Combining Spread and Rest
+        function runExample6() {
+            const code = `
+<span class="comment">// Example 6: Combining Spread and Rest</span>
+function mergeArrays(arr1, ...rest) {
+    return [...arr1, ...rest];
+}
+
+const arr1 = [1, 2, 3];
+const arr2 = [4, 5];
+const arr3 = [6, 7];
+
+const result = mergeArrays(arr1, arr2, arr3);
+console.log(result); // [1, 2, 3, 4, 5, 6, 7]
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: [1, 2, 3, 4, 5, 6, 7]</strong><br>
+                               <code>...rest</code> collects arrays, then <code>[...arr1, ...rest]</code> combines them all.`;
+        }
+        
+        // Additional examples
+        function runExample7() {
+            const code = `
+<span class="comment">// Example 7: Spread with Object Properties</span>
+const person = { name: 'Bob', age: 30 };
+const profile = { ...person, bio: 'Developer' };
+
+console.log(profile); // { name: 'Bob', age: 30, bio: 'Developer' }
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: { name: "Bob", age: 30, bio: "Developer" }</strong><br>
+                               Spread operator adds new properties without duplicating existing ones.`;
+        }
+        
+        // Run all examples
+        const examples = [
+            { fn: runExample1, title: 'Example 1: Spread in Function Call' },
+            { fn: runExample2, title: 'Example 2: Rest in Function Definition' },
+            { fn: runExample3, title: 'Example 3: Spread in Array' },
+            { fn: runExample4, title: 'Example 4: Rest in Object' },
+            { fn: runExample5, title: 'Example 5: Spread in Object' },
+            { fn: runExample6, title: 'Example 6: Combining Spread and Rest' },
+            { fn: runExample7, title: 'Example 7: Spread with Object Properties' }
+        ];
+        
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                const example = examples.find(ex => ex.title === btn.textContent.trim());
+                if (example) {
+                    example.fn();
+                }
+            });
+        });
+        
+        // Run all examples on page load
+        window.addEventListener('load', () => {
+            let count = 0;
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach((btn, index) => {
+                if (examples[index]) {
+                    setTimeout(() => {
+                        const example = examples[index];
+                        const title = btn.textContent.trim().split(':')[1];
+                        const output = document.getElementById('output');
+                        output.innerHTML = `<strong>${title}:</strong> See code block for details...`;
+                    }, count * 200);
+                    count++;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

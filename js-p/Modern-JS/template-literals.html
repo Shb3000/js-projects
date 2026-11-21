@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Template Literals Exercise</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .exercise-card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 { color: #333; }
+    h2 { color: #555; margin-top: 0; }
+    code {
+      background-color: #282c34;
+      color: #abb2bf;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    pre {
+      background-color: #282c34;
+      color: #e06c75;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    .output {
+      background-color: #2d3a4b;
+      color: #79c0ff;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    .hint {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 10px;
+      margin: 15px 0;
+      color: #856404;
+    }
+  </style>
+</head>
+<body>
+  <h1>📝 JavaScript Template Literals Exercise</h1>
+  
+  <div class="exercise-card">
+    <h2>Exercise 1: Basic Template Literal</h2>
+    <p>Use backticks to create a template literal with variables.</p>
+    <pre>const name = 'Alice';
+const age = 25;
+
+const message = \`Hello, \${name}! You are \${age} years old.\`;
+console.log(message);</pre>
+    <div class="output">Output:</div>
+    <p>Hello, Alice! You are 25 years old.</p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 2: Multiple Expressions</h2>
+    <p>Use multiple expressions in a template literal.</p>
+    <pre>const first = 'Alice';
+const last = 'Smith';
+const year = 2024;
+
+const bio = \`Name: \${first} \${last}
+Born: 1999
+Year: \${year}\`;
+console.log(bio);</pre>
+    <div class="output">Output:</div>
+    <p>Name: <span id="result2name"></span> \${last}
+Born: 1999
+Year: 2024</p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 3: Newlines in Template Literal</h2>
+    <p>Create multi-line strings with backticks.</p>
+    <pre>const greeting = \`Hello, world!
+This is a
+multi-line string.\`;
+console.log(greeting);</pre>
+    <div class="output">Output:</div>
+    <p>Hello, world!
+This is a
+multi-line string.</p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 4: Interpolation</h2>
+    <p>Use backticks for variable interpolation.</p>
+    <pre>const count = 5;
+const item = 'apple';
+
+const list = \`1. \${item}
+2. \${item}
+3. \${item}
+4. \${item}
+5. \${item}\`;
+console.log(list);</pre>
+    <div class="output">Output:</div>
+    <p>1. <span id="result4item"></span>
+2. <span id="result4item2"></span>
+3. <span id="result4item3"></span>
+4. <span id="result4item4"></span>
+5. <span id="result4item5"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 5: Escape Characters</h2>
+    <p>Use escape characters in template literals.</p>
+    <pre>const text = \`Hello\
+World!
+
+This has
+multiple newlines.\`;
+console.log(text);</pre>
+    <div class="output">Output:</div>
+    <p>Hello\
+World!
+
+This has
+multiple newlines.</p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 6: String Concatenation vs Template</h2>
+    <p>Compare string concatenation with template literals.</p>
+    <pre>const name = 'Alice';
+const age = 25;
+
+// String concatenation
+const concat = 'Hello, ' + name + '! You are ' + age + ' years old.';
+
+// Template literal
+const template = \`Hello, \${name}! You are \${age} years old.\`;
+
+console.log('Concat:', concat);
+console.log('Template:', template);</pre>
+    <div class="output">Output:</div>
+    <p>Concat: Hello, Alice! You are 25 years old.
+Template: Hello, Alice! You are 25 years old.</p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 7: Template with Math</h2>
+    <p>Use template literals with mathematical expressions.</p>
+    <pre>const a = 10;
+const b = 5;
+
+const sum = \`Sum: \${a + b}\`;
+const product = \`Product: \${a * b}\`;
+const quotient = \`Quotient: \${(a + b) / 2}\`;
+
+console.log(sum);
+console.log(product);
+console.log(quotient);</pre>
+    <div class="output">Output:</div>
+    <p>Sum: <span id="result7sum"></span>
+Product: <span id="result7product"></span>
+Quotient: <span id="result7quotient"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 8: Template with Objects</h2>
+    <p>Use template literals with object properties.</p>
+    <pre>const person = {
+  name: 'Bob',
+  age: 30
+};
+
+const intro = \`Hi, I'm \${person.name}.
+I'm \${person.age} years old.\`;
+console.log(intro);</pre>
+    <div class="output">Output:</div>
+    <p>Hi, I'm <span id="result8name"></span>.
+I'm <span id="result8age"></span> years old.</p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 9: Template Trailing Comma</h2>
+    <p>Create objects with trailing commas in templates.</p>
+    <pre>const items = \`\${[1, 2, 3]} is my favorite list.\`;
+console.log(items);</pre>
+    <div class="output">Output:</div>
+    <p>1, 2, 3 is my favorite list.</p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 10: Template with Template</h2>
+    <p>Use template literals inside other template literals.</p>
+    <pre>const inner = \`This is inner.\`;
+const outer = \`Outer: \${inner}.\`;
+console.log(outer);</pre>
+    <div class="output">Output:</div>
+    <p>Outer: <span id="result10"></span></p>
+  </div>
+
+  <script>
+    // Exercise 2
+    document.getElementById('result2name').textContent = 'Alice';
+
+    // Exercise 4
+    const item = 'apple';
+    document.getElementById('result4item').textContent = item;
+    document.getElementById('result4item2').textContent = item;
+    document.getElementById('result4item3').textContent = item;
+    document.getElementById('result4item4').textContent = item;
+    document.getElementById('result4item5').textContent = item;
+
+    // Exercise 7
+    const a = 10, b = 5;
+    document.getElementById('result7sum').textContent = a + b;
+    document.getElementById('result7product').textContent = a * b;
+    document.getElementById('result7quotient').textContent = (a + b) / 2;
+
+    // Exercise 8
+    const person = { name: 'Bob', age: 30 };
+    document.getElementById('result8name').textContent = person.name;
+    document.getElementById('result8age').textContent = person.age;
+
+    // Exercise 10
+    const inner = 'This is inner.';
+    document.getElementById('result10').textContent = 'Outer: ' + inner;
+  </script>
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Post Reader</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, sans-serif; background: #f4f5f7; color: #222; }
+  header { background: #26425c; color: #fff; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+  header h1 { margin: 0; font-size: 20px; }
+  main { display: grid; grid-template-columns: 340px 1fr; gap: 18px; max-width: 1100px; margin: 18px auto; padding: 0 16px; }
+  .panel { background: #fff; border-radius: 6px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  input { width: 100%; padding: 9px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+  button { background: #26425c; color: #fff; border: 0; border-radius: 4px; padding: 7px 12px; cursor: pointer; font-size: 13px; }
+  button.ghost { background: #e5e7eb; color: #222; }
+  #list { list-style: none; padding: 0; margin: 12px 0 0; max-height: 70vh; overflow-y: auto; }
+  #list li { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 14px; display: flex; justify-content: space-between; gap: 8px; }
+  #list li:hover { background: #f0f4f8; }
+  #list li.active { background: #dde8f3; }
+  #list li span.title { flex: 1; }
+  .star { color: #c9a227; font-size: 18px; line-height: 1; }
+  .status { font-size: 14px; color: #555; margin: 10px 0; }
+  .error { color: #a02020; font-size: 14px; }
+  .muted { color: #888; }
+  .comment { border-top: 1px solid #eee; padding: 10px 0; font-size: 14px; }
+  .comment strong { display: block; margin-bottom: 4px; }
+  .toolbar { display: flex; gap: 8px; margin-top: 10px; }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Post Reader</h1>
+  <span id="favCount"></span>
+</header>
+
+<main>
+  <section class="panel">
+    <input id="search" placeholder="Search posts by title">
+    <div class="toolbar">
+      <button id="onlyFavs" class="ghost">Show favourites only</button>
+      <button id="retryBtn" class="ghost" style="display:none">Retry</button>
+    </div>
+    <p id="listStatus" class="status"></p>
+    <ul id="list"></ul>
+  </section>
+
+  <section class="panel" id="detail">
+    <p class="muted">Pick a post from the list to read it.</p>
+  </section>
+</main>
+<script>
+  // data lives here so it works without internet
+  const POSTS = [
+    { id: 1, userId: 1, title: "Why I started learning to cook", body: "I used to order takeaway every night. Last spring I decided to cook one simple meal a day, and it changed how I spend my evenings." },
+    { id: 2, userId: 2, title: "Notes from my first month of running", body: "I could only manage two minutes without stopping. Slowly the runs got longer, and I learned that a slow pace is the right pace at the start." },
+    { id: 3, userId: 3, title: "A small guide to planning a weekend trip", body: "Pick one main place, book the first night in advance, and leave one afternoon empty. Most of my best memories came from the unplanned hours." },
+    { id: 4, userId: 1, title: "How I keep my desk tidy", body: "A tidy desk is not about buying storage boxes. I clear it at the end of each day and keep only the things I use every day within reach." },
+    { id: 5, userId: 2, title: "Why I stopped checking my phone first thing", body: "For a month I left my phone in another room until after breakfast. I was calmer, and I finally started reading again." },
+    { id: 6, userId: 3, title: "Learning to draw with a cheap notebook", body: "I bought a plain notebook and drew one object every morning. The drawings were bad at first, but after a hundred of them I could see the difference." },
+    { id: 7, userId: 1, title: "Choosing a first houseplant", body: "Start with something that forgives mistakes. A pothos survived my forgetting to water it for two weeks, which gave me the confidence to keep going." },
+    { id: 8, userId: 2, title: "What I learned from my first code review", body: "Nobody was angry about my code. The comments were about clarity, and they made me write shorter functions with clearer names." }
+  ];
+
+  const USERS = [
+    { id: 1, name: "Maryam Hosseini", company: { name: "Bright Path Studio" } },
+    { id: 2, name: "Daniel Brooks", company: { name: "Northwind Lab" } },
+    { id: 3, name: "Leila Karimi", company: { name: "Harbor Media" } }
+  ];
+
+  const COMMENTS = [
+    { id: 1, postId: 1, name: "Omid Rahimi", email: "omid@example.com", body: "This made me want to try cooking again tonight." },
+    { id: 2, postId: 1, name: "Sara Lewis", email: "sara.lewis@example.com", body: "One simple meal a day is such a good goal. Which dish did you start with?" },
+    { id: 3, postId: 2, name: "Chris Evans", email: "chris@example.com", body: "Two minutes is a real start. Keep going." },
+    { id: 4, postId: 2, name: "Nima Azari", email: "nima@example.com", body: "I always rush the first weeks. Thanks for the reminder." },
+    { id: 5, postId: 2, name: "Ella Moore", email: "ella@example.com", body: "Did you use an app to track your runs?" },
+    { id: 6, postId: 3, name: "Tom Walsh", email: "tom@example.com", body: "The empty afternoon tip is the best advice I have read this year." },
+    { id: 7, postId: 4, name: "Hana Sato", email: "hana@example.com", body: "Clearing the desk at the end of the day is a habit I want to build." },
+    { id: 8, postId: 5, name: "Ali Mohammadi", email: "ali@example.com", body: "I tried this for a week and felt the same. Good luck with the reading." },
+    { id: 9, postId: 6, name: "Zahra Noori", email: "zahra@example.com", body: "A hundred drawings is a good number. I will start my own notebook." },
+    { id: 10, postId: 7, name: "Emma Clark", email: "emma@example.com", body: "Pothos saved my first plant too. Great pick." },
+    { id: 11, postId: 8, name: "Jake Turner", email: "jake@example.com", body: "Clearer names are underrated. Thanks for sharing this." }
+  ];
+
+  // pretend server: gives back data for a path like /posts/3/comments
+  // Returns undefined when nothing matches.
+  function findData(path) {
+    if (path.startsWith("/posts?")) return POSTS;
+
+    const commentsMatch = path.match(/^\/posts\/(\d+)\/comments$/);
+    if (commentsMatch) {
+      const postId = Number(commentsMatch[1]);
+      return COMMENTS.filter(c => c.postId === postId);
+    }
+
+    const userMatch = path.match(/^\/users\/(\d+)$/);
+    if (userMatch) {
+      return USERS.find(u => u.id === Number(userMatch[1]));
+    }
+
+    return undefined;
+  }
+  const FAV_KEY = "post-reader-favourites";
+
+  const state = {
+    posts: [],          // all posts from the server
+    users: {},          // authors already loaded
+    selectedId: null,   // post currently open
+    favourites: loadFavourites(),
+    onlyFavs: false
+  };
+
+  // JSON: favourites are saved as a JSON array of post ids
+  function loadFavourites() {
+    try {
+      return JSON.parse(localStorage.getItem(FAV_KEY)) || [];
+    } catch (err) {
+      return [];
+    }
+  }
+
+  function saveFavourites() {
+    try {
+      localStorage.setItem(FAV_KEY, JSON.stringify(state.favourites));
+    } catch (err) {
+      // storage can be blocked, the app still works without saving
+    }
+  }
+
+  // Callback: debounce waits for the user to stop typing before it runs the callback
+  function debounce(callback, delay) {
+    let timer = null;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => callback(...args), delay);
+    };
+  }
+
+  // Promise: a request with a timeout.
+  // Simulates a request: answers after a short delay, and gives up if it takes longer than ms.
+  // Promise.race returns whichever promise settles first.
+  function getJSON(path, ms = 5000) {
+    let timer = null;
+
+    const answer = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const data = findData(path);
+        if (data === undefined) reject(new Error("Not found: " + path));
+        else resolve(data);
+      }, 300);
+    });
+
+    const timeout = new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error("Request timed out")), ms);
+    });
+
+    return Promise.race([answer, timeout]).finally(() => clearTimeout(timer));
+  }
+
+  function setListStatus(text, isError = false) {
+    const p = document.getElementById("listStatus");
+    p.textContent = text;
+    p.className = isError ? "error" : "status";
+  }
+
+  // async/await: load the post list
+  async function loadPosts() {
+    setListStatus("Loading posts...");
+    document.getElementById("retryBtn").style.display = "none";
+    try {
+      state.posts = await getJSON("/posts?_limit=30");
+      setListStatus("");
+      renderList();
+    } catch (err) {
+      setListStatus("Could not load posts: " + err.message, true);
+      document.getElementById("retryBtn").style.display = "inline-block";
+    }
+  }
+
+  // Filter and map run here: search text, favourites-only, then build the list items
+  function renderList() {
+    const text = document.getElementById("search").value.trim().toLowerCase();
+
+    const visible = state.posts
+      .filter(p => p.title.toLowerCase().includes(text))
+      .filter(p => !state.onlyFavs || state.favourites.includes(p.id));
+
+    const list = document.getElementById("list");
+    list.innerHTML = "";
+
+    visible.forEach(post => {
+      const li = document.createElement("li");
+      if (post.id === state.selectedId) li.classList.add("active");
+
+      const title = document.createElement("span");
+      title.className = "title";
+      title.textContent = post.title;
+
+      const star = document.createElement("span");
+      star.className = "star";
+      star.textContent = state.favourites.includes(post.id) ? "★" : "☆";
+      star.dataset.fav = post.id;
+
+      li.append(title, star);
+      li.dataset.id = post.id;
+      list.appendChild(li);
+    });
+
+    const favCount = state.favourites.length;
+    document.getElementById("favCount").textContent = favCount + " favourite(s)";
+
+    if (visible.length === 0 && state.posts.length > 0) {
+      setListStatus("No posts match.");
+    } else if (visible.length > 0) {
+      setListStatus("");
+    }
+  }
+
+  // Promise.all: fetch the author and comments at the same time, not one after another
+  async function openPost(id) {
+    state.selectedId = id;
+    renderList();
+
+    const detail = document.getElementById("detail");
+    detail.innerHTML = "<p class='muted'>Loading post...</p>";
+
+    const post = state.posts.find(p => p.id === id);
+
+    try {
+      const [author, comments] = await Promise.all([
+        state.users[post.userId] ?? getJSON("/users/" + post.userId),
+        getJSON("/posts/" + id + "/comments")
+      ]);
+
+      state.users[post.userId] = author;
+
+      // The user may have clicked another post while this was loading
+      if (state.selectedId !== id) return;
+      renderDetail(post, author, comments);
+    } catch (err) {
+      if (state.selectedId !== id) return;
+      detail.innerHTML = "";
+      const p = document.createElement("p");
+      p.className = "error";
+      p.textContent = "Could not open this post: " + err.message;
+      detail.appendChild(p);
+    }
+  }
+
+  function renderDetail(post, author, comments) {
+    const detail = document.getElementById("detail");
+    detail.innerHTML = "";
+
+    const h2 = document.createElement("h2");
+    h2.textContent = post.title;
+
+    const by = document.createElement("p");
+    by.className = "muted";
+    by.textContent = "By " + author.name + " (" + author.company.name + ")";
+
+    const body = document.createElement("p");
+    body.textContent = post.body;
+
+    const favBtn = document.createElement("button");
+    const isFav = state.favourites.includes(post.id);
+    favBtn.textContent = isFav ? "Remove from favourites" : "Add to favourites";
+    favBtn.dataset.toggle = post.id;
+
+    const heading = document.createElement("h3");
+    heading.textContent = comments.length + " comments";
+
+    detail.append(h2, by, body, favBtn, heading);
+
+    comments.forEach(({ name, email, body: text }) => {
+      const div = document.createElement("div");
+      div.className = "comment";
+      const who = document.createElement("strong");
+      who.textContent = name + " <" + email + ">";
+      const msg = document.createElement("span");
+      msg.textContent = text;
+      div.append(who, msg);
+      detail.appendChild(div);
+    });
+  }
+
+  function toggleFavourite(id) {
+    // filter makes a new array without the id, or spread adds it
+    state.favourites = state.favourites.includes(id)
+      ? state.favourites.filter(f => f !== id)
+      : [...state.favourites, id];
+
+    saveFavourites();
+    renderList();
+    if (state.selectedId === id) openPost(id);
+  }
+
+  // Events
+  document.getElementById("search").addEventListener("input", debounce(renderList, 250));
+
+  document.getElementById("list").addEventListener("click", e => {
+    const star = e.target.dataset.fav;
+    if (star) {
+      toggleFavourite(Number(star));
+      return;
+    }
+    const li = e.target.closest("li");
+    if (li) openPost(Number(li.dataset.id));
+  });
+
+  document.getElementById("detail").addEventListener("click", e => {
+    if (e.target.dataset.toggle) toggleFavourite(Number(e.target.dataset.toggle));
+  });
+
+  document.getElementById("onlyFavs").addEventListener("click", e => {
+    state.onlyFavs = !state.onlyFavs;
+    e.target.textContent = state.onlyFavs ? "Show all posts" : "Show favourites only";
+    renderList();
+  });
+
+  document.getElementById("retryBtn").addEventListener("click", loadPosts);
+
+  loadPosts();
+</script>
+</body>
+</html>

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Event Loop Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 750px;
+        }
+        
+        h1 {
+            color: #3498db;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .concept-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+        
+        .concept-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .code-block .function {
+            color: #6366f1;
+        }
+        
+        .code-block .variable {
+            color: #228be6;
+        }
+        
+        .code-block .keyword {
+            color: #dc3545;
+        }
+        
+        .output {
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .output strong {
+            color: #3498db;
+        }
+        
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        button {
+            padding: 15px 25px;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background: #3498db;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .info-box {
+            background: #d6eaf8;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            color: #2c5282;
+            line-height: 1.8;
+        }
+        
+        .info-box h3 {
+            color: #2c5282;
+            margin-bottom: 15px;
+        }
+        
+        .info-box code {
+            background: #3498db;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>The Event Loop Practice</h1>
+        <p>Understand how JavaScript executes code, call stack, and the event loop!</p>
+        
+        <div class="btn-group">
+            <button onclick="runExample1()">Example 1: Call Stack</button>
+            <button onclick="runExample2()">Example 2: Event Queue</button>
+            <button onclick="runExample3()">Example 3: setTimeout vs setInterval</button>
+            <button onclick="runExample4()">Example 4: microtasks vs macrotasks</button>
+            <button onclick="runExample5()">Example 5: Non-blocking I/O</button>
+            <button onclick="runExample6()">Example 6: Event Delegation</button>
+        </div>
+        
+        <div id="output" class="output">
+            <strong>Click a button to see event loop examples!</strong>
+        </div>
+        
+        <div class="info-box">
+            <h3>🔧 Understanding the Event Loop</h3>
+            <p>
+                <strong>Call Stack:</strong> Executes synchronous code top-down<br>
+                <strong>Event Queue:</strong> Stores async operations (setTimeout, events)<br>
+                <strong>Microtask Queue:</strong> Higher priority (Promise.resolve, MutationObserver)<br>
+                <strong>Macrotask Queue:</strong> Lower priority (setTimeout, setInterval, I/O)
+            </p>
+            <ul>
+                <li>JavaScript is single-threaded</li>
+                <li>Event loop continuously checks queues when call stack is empty</li>
+                <li>Microtasks execute before macrotasks in the same event</li>
+            </ul>
+        </div>
+        
+        <div class="code-block">
+            <span class="comment">// Examples will appear here...</span>
+        </div>
+    </div>
+    
+    <script>
+        // Example 1: Call Stack
+        function runExample1() {
+            const code = `
+<span class="comment">// Example 1: Call Stack</span>
+function outer() {
+    console.log('1. outer started');
+    function inner() {
+        console.log('2. inner started');
+        console.log('3. inner ended');
+    }
+    inner();
+    console.log('4. outer continued');
+}
+
+outer();
+// Output: 1, 2, 3, 4 (all synchronous)
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Output: 1, 2, 3, 4</strong><br>
+                               Code executes synchronously on the call stack.`;
+        }
+        
+        // Example 2: Event Queue
+        function runExample2() {
+            const code = `
+<span class="comment">// Example 2: Event Queue</span>
+console.log('A. Page loaded');
+
+setTimeout(() => {
+    console.log('B. setTimeout executed');
+}, 100);
+
+// Output: A (then B after 100ms)
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Output: A, then B after 100ms</strong><br>
+                               setTimeout waits in the event queue.`;
+        }
+        
+        // Example 3: setTimeout vs setInterval
+        function runExample3() {
+            const code = `
+<span class="comment">// Example 3: setTimeout vs setInterval</span>
+let count = 0;
+
+setTimeout(() => {
+    console.log('1. setTimeout');
+}, 100);
+
+setInterval(() => {
+    count++;
+    if (count >= 3) {
+        console.log('2. setInterval finished');
+    }
+}, 100);
+
+// Output: 1 after 100ms, then 2 after 200ms
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Output: setTimeout at 100ms, setInterval at 200ms</strong><br>
+                               setInterval can fire multiple times.`;
+        }
+        
+        // Example 4: microtasks vs macrotasks
+        function runExample4() {
+            const code = `
+<span class="comment">// Example 4: microtasks vs macrotasks</span>
+console.log('1. Synchronous code');
+
+Promise.resolve('A').then(() => {
+    console.log('2. Microtask (Promise)');
+});
+
+setTimeout(() => {
+    console.log('3. Macrotask (setTimeout)');
+}, 10);
+
+console.log('4. More synchronous code');
+
+// Output: 1, 4, 2, 3
+// Microtasks run before macrotasks!
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Output: 1, 4, 2, 3</strong><br>
+                               Microtasks (Promise) execute before macrotasks (setTimeout).`;
+        }
+        
+        // Example 5: Non-blocking I/O
+        function runExample5() {
+            const code = `
+<span class="comment">// Example 5: Non-blocking I/O</span>
+console.log('Starting...');
+
+fetch('https://api.example.com/data')
+    .then(response => response.json())
+    .then(data => {
+        console.log('Data received:', data);
+    });
+
+console.log('Still executing...');
+
+// Code continues immediately, data arrives later
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Output: Starts, continues, then data arrives</strong><br>
+                               Async operations don't block execution.`;
+        }
+        
+        // Example 6: Event Delegation
+        function runExample6() {
+            const code = `
+<span class="comment">// Example 6: Event Delegation</span>
+const buttons = document.querySelectorAll('.button');
+
+// Single handler for all buttons
+buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        console.log('Clicked:', btn.textContent);
+    });
+});
+
+// When you click any button, the same handler runs
+// This is more efficient than adding listeners to each button
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Efficient event handling</strong><br>
+                               Event delegation handles multiple elements with one listener.`;
+        }
+        
+        // Additional examples
+        function runExample7() {
+            const code = `
+<span class="comment">// Example 7: Promise chaining</span>
+console.log('1. Start');
+
+fetch('https://api.example.com')
+    .then(response => response.json())
+    .then(data => {
+        console.log('2. Data received');
+        return data.process();
+    })
+    .then(processed => {
+        console.log('3. Processed data');
+    });
+
+console.log('4. Continue');
+
+// Output: 1, 4, 2, 3
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Output: 1, 4, 2, 3</strong><br>
+                               Chained promises execute sequentially.`;
+        }
+        
+        function runExample8() {
+            const code = `
+<span class="comment">// Example 8: async/await</span>
+async function fetchAndProcess() {
+    console.log('1. Starting');
+    
+    const data = await fetch('https://api.example.com')
+        .then(r => r.json());
+    
+    console.log('2. Data fetched');
+}
+
+fetchAndProcess();
+// Output: 1, 2 (appears after API response)
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Output: 1, 2</strong><br>
+                               async/await makes async code look synchronous.`;
+        }
+        
+        // Run all examples
+        const examples = [
+            { fn: runExample1, title: 'Example 1: Call Stack' },
+            { fn: runExample2, title: 'Example 2: Event Queue' },
+            { fn: runExample3, title: 'Example 3: setTimeout vs setInterval' },
+            { fn: runExample4, title: 'Example 4: microtasks vs macrotasks' },
+            { fn: runExample5, title: 'Example 5: Non-blocking I/O' },
+            { fn: runExample6, title: 'Example 6: Event Delegation' },
+            { fn: runExample7, title: 'Example 7: Promise chaining' },
+            { fn: runExample8, title: 'Example 8: async/await' }
+        ];
+        
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                const example = examples.find(ex => ex.title === btn.textContent.trim());
+                if (example) {
+                    example.fn();
+                }
+            });
+        });
+        
+        // Run all examples on page load
+        window.addEventListener('load', () => {
+            let count = 0;
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach((btn, index) => {
+                if (examples[index]) {
+                    setTimeout(() => {
+                        const example = examples[index];
+                        const title = btn.textContent.trim().split(':')[1];
+                        const output = document.getElementById('output');
+                        output.innerHTML = `<strong>${title}:</strong> See code block for details...`;
+                    }, count * 200);
+                    count++;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

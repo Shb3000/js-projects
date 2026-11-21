@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>call(), apply(), bind() Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 750px;
+        }
+        
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .method-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+        
+        .method-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .code-block .function {
+            color: #6366f1;
+        }
+        
+        .code-block .variable {
+            color: #228be6;
+        }
+        
+        .code-block .keyword {
+            color: #dc3545;
+        }
+        
+        .code-block .string {
+            color: #228be6;
+        }
+        
+        .output {
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .output strong {
+            color: #007bff;
+        }
+        
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        button {
+            padding: 15px 25px;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background: #007bff;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .info-box {
+            background: #d1ecf1;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            color: #0c546a;
+            line-height: 1.8;
+        }
+        
+        .info-box h3 {
+            color: #0c546a;
+            margin-bottom: 15px;
+        }
+        
+        .info-box code {
+            background: #007bff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>call(), apply(), bind() Practice</h1>
+        <p>Learn how to control function execution and the <code>this</code> keyword using these three essential methods!</p>
+        
+        <div class="btn-group">
+            <button onclick="runExample1()">Example 1: Understanding .call()</button>
+            <button onclick="runExample2()">Example 2: Understanding .apply()</button>
+            <button onclick="runExample3()">Example 3: Understanding .bind()</button>
+            <button onclick="runExample4()">Example 4: .call() with arguments</button>
+            <button onclick="runExample5()">Example 5: .apply() with array</button>
+            <button onclick="runExample6()">Example 6: .bind() for partial application</button>
+            <button onclick="runExample7()">Example 7: Real-world use cases</button>
+        </div>
+        
+        <div id="output" class="output">
+            <strong>Click a button to see call(), apply(), and bind() examples!</strong>
+        </div>
+        
+        <div class="info-box">
+            <h3>🔧 Understanding the Methods</h3>
+            <p>
+                <strong>Function.call(thisArg, ...args)</strong><br>
+                Executes the function immediately with <code>this</code> set to <code>thisArg</code> and arguments provided individually.
+            </p>
+            <p>
+                <strong>Function.apply(thisArg, [argsArray])</strong><br>
+                Executes the function immediately with <code>this</code> set to <code>thisArg</code> and arguments provided as an array.
+            </p>
+            <p>
+                <strong>Function.bind(thisArg, ...args)</strong><br>
+                Returns a new function with <code>this</code> permanently set to <code>thisArg</code> and arguments pre-bound.
+            </p>
+        </div>
+        
+        <div class="code-block">
+            <span class="comment">// Examples will appear here...</span>
+        </div>
+    </div>
+    
+    <script>
+        // Example 1: Understanding .call()
+        function runExample1() {
+            const code = `
+<span class="comment">// Example 1: Understanding .call()</span>
+function greet(name) {
+    console.log('Hello, ' + name);
+}
+
+// Default: this is window
+greet('Alice'); // "Hello, Alice"
+
+// Using .call() to set this explicitly
+const person = { name: 'Bob' };
+greet.call(person, 'Charlie'); // "Hello, Charlie"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Results: "Hello, Alice", "Hello, Charlie"</strong><br>
+                               <code>.call()</code> executes the function immediately with <code>this</code> set to the first argument.<br>
+                               Arguments are passed individually, not as an array.`;
+        }
+        
+        // Example 2: Understanding .apply()
+        function runExample2() {
+            const code = `
+<span class="comment">// Example 2: Understanding .apply()</span>
+function multiply(a, b, c) {
+    console.log(a + ' * ' + b + ' * ' + c + ' = ' + (a * b * c));
+}
+
+const values = [2, 3, 4];
+multiply.apply(null, values); // "2 * 3 * 4 = 24"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "2 * 3 * 4 = 24"</strong><br>
+                               <code>.apply()</code> passes arguments as an array to the function.<br>
+                               <code>null</code> for <code>this</code> means <code>window</code>.`;
+        }
+        
+        // Example 3: Understanding .bind()
+        function runExample3() {
+            const code = `
+<span class="comment">// Example 3: Understanding .bind()</span>
+function add(a, b) {
+    return a + b;
+}
+
+// .bind() returns a new function, doesn't execute it
+const adder = add.bind(null, 5);
+adder(10); // 15
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: 15</strong><br>
+                               <code>.bind()</code> creates a new function with pre-set arguments.<br>
+                               The original <code>add</code> function is NOT executed immediately.`;
+        }
+        
+        // Example 4: .call() with multiple arguments
+        function runExample4() {
+            const code = `
+<span class="comment">// Example 4: .call() with multiple arguments</span>
+function calculateInterest(principal, rate, time) {
+    const interest = principal * rate * time;
+    console.log('Interest: ' + interest);
+}
+
+const account = { principal: 1000, rate: 0.05 };
+calculateInterest.call(account, 1000, 0.05, 1); // Interest: 50
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "Interest: 50"</strong><br>
+                               <code>.call()</code> can pass <code>this</code> plus multiple individual arguments.<br>
+                               The arguments after <code>this</code> are used normally in the function.`;
+        }
+        
+        // Example 5: .apply() with array of arrays
+        function runExample5() {
+            const code = `
+<span class="comment">// Example 5: .apply() with array of arrays</span>
+function processResults(results) {
+    console.log('Processing: ' + results.join(', '));
+}
+
+const data = [[1, 2], [3, 4], [5, 6]];
+processResults.apply(null, data); // "Processing: 1, 2, 3, 4, 5, 6"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "Processing: 1, 2, 3, 4, 5, 6"</strong><br>
+                               <code>.apply()</code> flattens the array of arrays.<br>
+                               Each inner array becomes a separate argument.`;
+        }
+        
+        // Example 6: .bind() for partial application
+        function runExample6() {
+            const code = `
+<span class="comment">// Example 6: .bind() for partial application</span>
+function createUser(name, age, city) {
+    return 'User: ' + name + ', ' + age + ' years old, lives in ' + city;
+}
+
+// Bind name and age, call later with city
+const createUserBoston = createUser.bind(null, 'John', 25);
+createUserBoston('Boston'); // "User: John, 25 years old, lives in Boston"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "User: John, 25 years old, lives in Boston"</strong><br>
+                               <code>.bind()</code> pre-sets some arguments, you provide the rest when calling.<br>
+                               This is useful for creating specialized function versions.`;
+        }
+        
+        // Example 7: Real-world use cases
+        function runExample7() {
+            const code = `
+<span class="comment">// Example 7: Real-world use cases</span>
+
+// 1. Using .bind() for event handlers
+function handleClick(event) {
+    console.log('Clicked by:', event.target.id);
+}
+
+const element = { id: 'button1' };
+element.handleClick = handleClick.bind(element);
+
+// 2. Using .call() for DOM manipulation
+function setStyle(el, prop, value) {
+    el.style[prop] = value;
+}
+
+const box = { style: {} };
+setStyle.call(box, 'color', 'red');
+
+// 3. Using .apply() for array mapping
+function sum(arr) {
+    return arr.reduce((a, b) => a + b, 0);
+}
+
+const numbers = [1, 2, 3, 4, 5];
+const result = sum.apply(null, numbers); // 15
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Results: All work correctly!</strong><br>
+                               <code>.bind()</code> is great for event handlers and creating specialized functions.<br>
+                               <code>.call()</code> and <code>.apply()</code> are useful for passing <code>this</code> and arguments.`;
+        }
+        
+        // Additional examples
+        function runExample8() {
+            const code = `
+<span class="comment">// Example 8: Comparing call, apply, bind</span>
+function add(a, b) {
+    console.log('a=' + a + ', b=' + b + ', result=' + (a + b));
+}
+
+// call - execute immediately
+add.call(null, 1, 2); // a=1, b=2, result=3
+
+// apply - execute immediately
+add.apply(null, [3, 4]); // a=3, b=4, result=7
+
+// bind - return new function
+const adder = add.bind(null, 5);
+adder(6); // a=5, b=6, result=11
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Results: Immediate execution for call/apply, delayed for bind</strong><br>
+                               <code>.call()</code> and <code>.apply()</code> execute the function now.<br>
+                               <code>.bind()</code> returns a NEW function that executes later.`;
+        }
+        
+        // Run all examples
+        const examples = [
+            { fn: runExample1, title: 'Example 1: Understanding .call()' },
+            { fn: runExample2, title: 'Example 2: Understanding .apply()' },
+            { fn: runExample3, title: 'Example 3: Understanding .bind()' },
+            { fn: runExample4, title: 'Example 4: .call() with arguments' },
+            { fn: runExample5, title: 'Example 5: .apply() with array' },
+            { fn: runExample6, title: 'Example 6: .bind() for partial application' },
+            { fn: runExample7, title: 'Example 7: Real-world use cases' },
+            { fn: runExample8, title: 'Example 8: Comparing call, apply, bind' }
+        ];
+        
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                const example = examples.find(ex => ex.title === btn.textContent.trim());
+                if (example) {
+                    example.fn();
+                }
+            });
+        });
+        
+        // Run all examples on page load
+        window.addEventListener('load', () => {
+            let count = 0;
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach((btn, index) => {
+                if (examples[index]) {
+                    setTimeout(() => {
+                        const example = examples[index];
+                        const title = btn.textContent.trim().split(':')[1];
+                        const output = document.getElementById('output');
+                        output.innerHTML = `<strong>${title}:</strong> See code block for details...`;
+                    }, count * 200);
+                    count++;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

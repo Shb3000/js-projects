@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Closures Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 750px;
+        }
+        
+        h1 {
+            color: #dc3545;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .example-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .example-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .code-block .function {
+            color: #6366f1;
+        }
+        
+        .code-block .variable {
+            color: #228be6;
+        }
+        
+        .code-block .keyword {
+            color: #dc3545;
+        }
+        
+        .code-block .string {
+            color: #228be6;
+        }
+        
+        .output {
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .output strong {
+            color: #dc3545;
+        }
+        
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        button {
+            padding: 15px 25px;
+            border: 2px solid #dc3545;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background: #dc3545;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .info-box {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            color: #856404;
+            line-height: 1.8;
+        }
+        
+        .info-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .info-box code {
+            background: #ffc107;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Closures Practice</h1>
+        <p>Explore how functions can remember their environment even after the outer function has finished executing!</p>
+        
+        <div class="btn-group">
+            <button onclick="runExample1()">Example 1: Basic Closure</button>
+            <button onclick="runExample2()">Example 2: Counter Function</button>
+            <button onclick="runExample3()">Example 3: IIFE Closure</button>
+            <button onclick="runExample4()">Example 4: Closure with setTimeout</button>
+            <button onclick="runExample5()">Example 5: Closure Factory</button>
+            <button onclick="runExample6()">Example 6: Closure Pitfall</button>
+        </div>
+        
+        <div id="output" class="output">
+            <strong>Click a button to see closure examples in action!</strong>
+        </div>
+        
+        <div class="info-box">
+            <h3>🔐 What is a Closure?</h3>
+            <p>
+                A <strong>closure</strong> is a function that remembers and has access to variables from its outer function's scope, 
+                even after the outer function has finished executing.
+            </p>
+            <p>
+                <strong>Key Characteristics:</strong>
+                <br>
+                <code>1.</code> Inner function has access to outer function's variables<br>
+                <code>2.</code> Inner function is returned from outer function<br>
+                <code>3.</code> Inner function still has access to outer variables after outer function returns
+            </p>
+            <p>
+                Closures are created when:
+                <br>
+                <code>1.</code> A function is defined inside another function<br>
+                <code>2.</code> An inner function is returned from the outer function<br>
+                <code>3.</code> An inner function is assigned to a variable
+            </p>
+        </div>
+        
+        <div class="code-block">
+            <span class="comment">// Examples will appear here...</span>
+        </div>
+    </div>
+    
+    <script>
+        // Example 1: Basic closure
+        function runExample1() {
+            const code = `
+<span class="comment">// Example 1: Basic Closure</span>
+function createGreeting(name) {
+    const message = 'Hello, ' + name + '!';
+    return function() {
+        console.log(message);
+    };
+}
+
+const sayHello = createGreeting('Alice');
+sayHello(); // prints: Hello, Alice!
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "Hello, Alice!" printed</strong><br>
+                               The inner function remembers <code>name</code> even after <code>createGreeting</code> returns.`;
+        }
+        
+        // Example 2: Counter function
+        function runExample2() {
+            const code = `
+<span class="comment">// Example 2: Closure Counter</span>
+function createCounter() {
+    let count = 0;
+    return function() {
+        count++;
+        return count;
+    };
+}
+
+const counter = createCounter();
+console.log(counter()); // 1
+console.log(counter()); // 2
+console.log(counter()); // 3
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Results: 1, 2, 3</strong><br>
+                               The counter function remembers <code>count</code> across multiple calls.<br>
+                               Each call increments and returns the current count.`;
+        }
+        
+        // Example 3: IIFE closure
+        function runExample3() {
+            const code = `
+<span class="comment">// Example 3: IIFE (Immediately Invoked Function Expression)</span>
+(function() {
+    const data = 'Secret Data';
+    console.log(data);
+})();
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "Secret Data" printed</strong><br>
+                               The IIFE creates a closure that runs immediately.<br>
+                               Variables inside the IIFE are not accessible outside.`;
+        }
+        
+        // Example 4: Closure with setTimeout
+        function runExample4() {
+            const code = `
+<span class="comment">// Example 4: Closure with setTimeout</span>
+let i = 1;
+
+setTimeout(function() {
+    console.log(i);
+}, 100);
+
+i = 10;
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result (after 100ms): 1</strong><br>
+                               The setTimeout callback remembers the original value of <code>i</code> (which was 1).<br>
+                               Even though <code>i</code> is changed to 10 after the setTimeout is set, the closure still has the old value.`;
+        }
+        
+        // Example 5: Closure factory
+        function runExample5() {
+            const code = `
+<span class="comment">// Example 5: Closure Factory Pattern</span>
+function createAdder(num) {
+    return function(n) {
+        return num + n;
+    };
+}
+
+const add5 = createAdder(5);
+const add10 = createAdder(10);
+
+console.log(add5(3));    // 8
+console.log(add10(3));  // 13
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Results: 8, 13</strong><br>
+                               The factory function returns different adder functions.<br>
+                               Each adder function remembers its own <code>num</code> value.`;
+        }
+        
+        // Example 6: Closure with arguments
+        function runExample6() {
+            const code = `
+<span class="comment">// Example 6: Closure with arguments</span>
+function outer() {
+    const message = 'This is a secret';
+    function inner(msg) {
+        console.log(message + ' ' + msg);
+    }
+    inner('Hello');
+}
+
+outer();
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "This is a secret Hello"</strong><br>
+                               The <code>inner</code> function has access to both <code>message</code> and <code>msg</code> parameters.<br>
+                               This creates a closure that combines both values.`;
+        }
+        
+        // Advanced examples
+        function runExample7() {
+            const code = `
+<span class="comment">// Example 7: Multiple Closures</span>
+function createMultipleClosures() {
+    const results = [];
+    
+    for (let i = 0; i < 3; i++) {
+        results.push(function() {
+            return i;
+        });
+    }
+    
+    return results;
+}
+
+const closures = createMultipleClosures();
+console.log(closures[0]()); // 2
+console.log(closures[1]()); // 2
+console.log(closures[2]()); // 2
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: 2, 2, 2</strong><br>
+                               This is a common closure pitfall!<br>
+                               All functions see the final value of <code>i</code> (which is 2) because <code>i</code> is shared across all iterations.`;
+        }
+        
+        function runExample8() {
+            const code = `
+<span class="comment">// Example 8: Using let instead of for...of</span>
+function createMultipleClosuresFixed() {
+    const results = [];
+    
+    for (let i = 0; i < 3; i++) {
+        results.push(function() {
+            return i;
+        });
+    }
+    
+    return results;
+}
+
+const closures = createMultipleClosuresFixed();
+console.log(closures[0]()); // 0
+console.log(closures[1]()); // 1
+console.log(closures[2]()); // 2
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: 0, 1, 2</strong><br>
+                               Using <code>let</code> instead of <code>var</code> fixes the closure issue!<br>
+                               Each iteration creates its own <code>i</code> variable.`;
+        }
+        
+        // Run all examples
+        const examples = [
+            { fn: runExample1, title: 'Example 1: Basic Closure' },
+            { fn: runExample2, title: 'Example 2: Counter Function' },
+            { fn: runExample3, title: 'Example 3: IIFE Closure' },
+            { fn: runExample4, title: 'Example 4: Closure with setTimeout' },
+            { fn: runExample5, title: 'Example 5: Closure Factory' },
+            { fn: runExample6, title: 'Example 6: Closure with arguments' },
+            { fn: runExample7, title: 'Example 7: Multiple Closures' },
+            { fn: runExample8, title: 'Example 8: Fixed Multiple Closures' }
+        ];
+        
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                const example = examples.find(ex => ex.title === btn.textContent.trim());
+                if (example) {
+                    example.fn();
+                }
+            });
+        });
+        
+        // Run all examples on page load
+        window.addEventListener('load', () => {
+            let count = 0;
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach((btn, index) => {
+                if (examples[index]) {
+                    setTimeout(() => {
+                        const example = examples[index];
+                        const title = btn.textContent.trim().split(':')[1];
+                        const output = document.getElementById('output');
+                        output.innerHTML = `<strong>${title}:</strong> See code block for details...`;
+                    }, count * 200);
+                    count++;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

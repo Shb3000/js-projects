@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Array Methods Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 750px;
+        }
+        
+        h1 {
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .example-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .example-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .code-block .function {
+            color: #6366f1;
+        }
+        
+        .code-block .variable {
+            color: #228be6;
+        }
+        
+        .code-block .keyword {
+            color: #dc3545;
+        }
+        
+        .output {
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .output strong {
+            color: #e74c3c;
+        }
+        
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        button {
+            padding: 15px 25px;
+            border: 2px solid #e74c3c;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background: #e74c3c;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .info-box {
+            background: #f2dede;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            color: #782b22;
+            line-height: 1.8;
+        }
+        
+        .info-box h3 {
+            color: #782b22;
+            margin-bottom: 15px;
+        }
+        
+        .info-box code {
+            background: #e74c3c;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Array Methods Practice</h1>
+        <p>Explore the powerful array methods: map, filter, reduce, find, some, every, forEach!</p>
+        
+        <div class="btn-group">
+            <button onclick="runExample1()">Example 1: map()</button>
+            <button onclick="runExample2()">Example 2: filter()</button>
+            <button onclick="runExample3()">Example 3: reduce()</button>
+            <button onclick="runExample4()">Example 4: find()</button>
+            <button onclick="runExample5()">Example 5: some() and every()</button>
+            <button onclick="runExample6()">Example 6: forEach()</button>
+            <button onclick="runExample7()">Example 7: findIndex()</button>
+        </div>
+        
+        <div id="output" class="output">
+            <strong>Click a button to see array method examples!</strong>
+        </div>
+        
+        <div class="info-box">
+            <h3>🔧 Common Array Methods</h3>
+            <ul>
+                <li><strong>map():</strong> Creates new array with transformed elements</li>
+                <li><strong>filter():</strong> Creates new array with filtered elements</li>
+                <li><strong>reduce():</strong> Reduces array to single value</li>
+                <li><strong>find():</strong> Returns first element matching condition</li>
+                <li><strong>some():</strong> Returns true if any element matches</li>
+                <li><strong>every():</strong> Returns true if all elements match</li>
+                <li><strong>forEach():</strong> Executes function for each element</li>
+            </ul>
+        </div>
+        
+        <div class="code-block">
+            <span class="comment">// Examples will appear here...</span>
+        </div>
+    </div>
+    
+    <script>
+        // Example 1: map()
+        function runExample1() {
+            const code = `
+<span class="comment">// Example 1: map()</span>
+const numbers = [1, 2, 3, 4, 5];
+
+const doubled = numbers.map(n => n * 2);
+console.log(doubled); // [2, 4, 6, 8, 10]
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: [2, 4, 6, 8, 10]</strong><br>
+                               <code>map()</code> creates a new array with transformed elements.`;
+        }
+        
+        // Example 2: filter()
+        function runExample2() {
+            const code = `
+<span class="comment">// Example 2: filter()</span>
+const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+const evens = numbers.filter(n => n % 2 === 0);
+console.log(evens); // [2, 4, 6, 8, 10]
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: [2, 4, 6, 8, 10]</strong><br>
+                               <code>filter()</code> creates a new array with elements that pass the test.`;
+        }
+        
+        // Example 3: reduce()
+        function runExample3() {
+            const code = `
+<span class="comment">// Example 3: reduce()</span>
+const numbers = [1, 2, 3, 4, 5];
+
+const sum = numbers.reduce((acc, n) => acc + n, 0);
+console.log(sum); // 15
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: 15</strong><br>
+                               <code>reduce()</code> reduces array to single value using accumulator.`;
+        }
+        
+        // Example 4: find()
+        function runExample4() {
+            const code = `
+<span class="comment">// Example 4: find()</span>
+const users = [
+    { name: 'Alice', age: 25 },
+    { name: 'Bob', age: 30 },
+    { name: 'Charlie', age: 25 }
+];
+
+const adult = users.find(u => u.age >= 25);
+console.log(adult.name); // "Bob"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "Bob"</strong><br>
+                               <code>find()</code> returns the first element matching the condition.`;
+        }
+        
+        // Example 5: some() and every()
+        function runExample5() {
+            const code = `
+<span class="comment">// Example 5: some() and every()</span>
+const numbers = [1, 2, 3, 4, 5];
+
+const hasEven = numbers.some(n => n % 2 === 0); // true
+const allEven = numbers.every(n => n % 2 === 0); // false
+console.log(hasEven, allEven); // true, false
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: true, false</strong><br>
+                               <code>some()</code> - any match? <code>every()</code> - all match?`;
+        }
+        
+        // Example 6: forEach()
+        function runExample6() {
+            const code = `
+<span class="comment">// Example 6: forEach()</span>
+const numbers = [1, 2, 3, 4, 5];
+
+numbers.forEach(n => {
+    console.log('Number:', n);
+});
+
+// Numbers printed: 1, 2, 3, 4, 5
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: 1, 2, 3, 4, 5 (printed)</strong><br>
+                               <code>forEach()</code> executes function for each element (doesn't return new array).`;
+        }
+        
+        // Example 7: findIndex()
+        function runExample7() {
+            const code = `
+<span class="comment">// Example 7: findIndex()</span>
+const numbers = [1, 2, 3, 4, 5];
+
+const index = numbers.findIndex(n => n === 3);
+console.log(index); // 2
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: 2</strong><br>
+                               <code>findIndex()</code> returns index of first matching element.`;
+        }
+        
+        // Additional examples
+        function runExample8() {
+            const code = `
+<span class="comment">// Example 8: Chaining array methods</span>
+const numbers = [1, 2, 3, 4, 5];
+
+const result = numbers
+    .map(n => n * 2)
+    .filter(n => n > 4)
+    .reduce((sum, n) => sum + n, 0);
+
+console.log(result); // 18 (8 + 10 + 12)
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: 18</strong><br>
+                               You can chain array methods for powerful transformations.`;
+        }
+        
+        // Run all examples
+        const examples = [
+            { fn: runExample1, title: 'Example 1: map()' },
+            { fn: runExample2, title: 'Example 2: filter()' },
+            { fn: runExample3, title: 'Example 3: reduce()' },
+            { fn: runExample4, title: 'Example 4: find()' },
+            { fn: runExample5, title: 'Example 5: some() and every()' },
+            { fn: runExample6, title: 'Example 6: forEach()' },
+            { fn: runExample7, title: 'Example 7: findIndex()' },
+            { fn: runExample8, title: 'Example 8: Chaining array methods' }
+        ];
+        
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                const example = examples.find(ex => ex.title === btn.textContent.trim());
+                if (example) {
+                    example.fn();
+                }
+            });
+        });
+        
+        // Run all examples on page load
+        window.addEventListener('load', () => {
+            let count = 0;
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach((btn, index) => {
+                if (examples[index]) {
+                    setTimeout(() => {
+                        const example = examples[index];
+                        const title = btn.textContent.trim().split(':')[1];
+                        const output = document.getElementById('output');
+                        output.innerHTML = `<strong>${title}:</strong> See code block for details...`;
+                    }, count * 200);
+                    count++;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

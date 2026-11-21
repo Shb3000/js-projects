@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arrow Functions Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        button {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        #result {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+        }
+        
+        .info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f4fd;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Arrow Functions Practice</h1>
+        <p>Click the buttons to see how arrow functions work with callbacks and higher-order functions!</p>
+        
+        <div class="button-group">
+            <button onclick="addNumbers()">Add Numbers</button>
+            <button onclick="multiplyValues()">Multiply Values</button>
+            <button onclick="checkParity()">Check Parity</button>
+            <button onclick="applyToNumbers()">Apply to All</button>
+        </div>
+        
+        <div id="result">
+            Click a button to see the result!
+        </div>
+        
+        <div class="info">
+            <strong>What's happening here?</strong><br>
+            Arrow functions (→) are concise way to write functions. They don't have their own this, arguments, or super. They're commonly used as callbacks with higher-order functions like map, filter, and reduce.
+        </div>
+    </div>
+    
+    <script>
+        // Arrow function examples
+        
+        // 1. Simple arrow function
+        function addNumbers() {
+            const numbers = [1, 2, 3, 4, 5];
+            
+            // Using arrow function in a callback
+            const sum = numbers.reduce((total, num) => total + num, 0);
+            
+            document.getElementById('result').innerHTML = 
+                `<strong>Sum of [1,2,3,4,5]: ${sum}</strong>`;
+        }
+        
+        // 2. Arrow function with arguments
+        function multiplyValues() {
+            const values = [2, 4, 6, 8, 10];
+            
+            // Using arrow function as callback
+            const result = values.map(val => val * 2);
+            
+            document.getElementById('result').innerHTML = 
+                `<strong>Doubled values: [${result.join(', ')}]</strong>`;
+        }
+        
+        // 3. Arrow function with no parameter list
+        function checkParity() {
+            const nums = [1, 2, 3, 4, 5, 6];
+            
+            // Using arrow function as callback
+            const odd = nums.filter(num => num % 2 === 1);
+            const even = nums.filter(num => num % 2 === 0);
+            
+            document.getElementById('result').innerHTML = 
+                `<strong>Odd numbers: [${odd.join(', ')}]<br>Even numbers: [${even.join(', ')}]</strong>`;
+        }
+        
+        // 4. Using arrow function as callback with higher-order function
+        function applyToNumbers() {
+            const numbers = [10, 20, 30, 40];
+            
+            // Using arrow function in map
+            const doubled = numbers.map(n => n * 2);
+            // Using arrow function in filter
+            const evens = numbers.filter(n => n % 2 === 0);
+            // Using arrow function in reduce
+            const sum = numbers.reduce((acc, curr) => acc + curr, 0);
+            
+            document.getElementById('result').innerHTML = 
+                `<strong>Doubled: [${doubled.join(', ')}]<br>
+                     Evens: [${evens.join(', ')}]<br>
+                     Sum: ${sum}</strong>`;
+        }
+        
+        // 5. Understanding this in arrow functions
+        function thisExample() {
+            const users = [
+                { name: 'Alice', role: 'admin' },
+                { name: 'Bob', role: 'user' },
+                { name: 'Charlie', role: 'user' }
+            ];
+            
+            // Arrow function preserves the this from the outer scope
+            const admin = users.find(user => user.role === 'admin');
+            
+            document.getElementById('result').innerHTML = 
+                `<strong>Administrator found: ${admin.name}</strong>`;
+        }
+        
+        // 6. Arrow function with default parameter
+        function defaultParam() {
+            const values = [5, 10, 15];
+            
+            // Using arrow function as callback
+            const result = values.map(val => (val * 2) || 0);
+            
+            document.getElementById('result').innerHTML = 
+                `<strong>Result: [${result.join(', ')}]</strong>`;
+        }
+        
+        // Show different examples on button click
+        const examples = [
+            { fn: addNumbers, title: 'Add Numbers' },
+            { fn: multiplyValues, title: 'Multiply Values' },
+            { fn: checkParity, title: 'Check Parity' },
+            { fn: applyToNumbers, title: 'Apply to All' },
+            { fn: thisExample, title: 'This Example' },
+            { fn: defaultParam, title: 'Default Param' }
+        ];
+        
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const example = examples.find(ex => ex.title === btn.textContent.trim());
+                if (example) {
+                    example.fn();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

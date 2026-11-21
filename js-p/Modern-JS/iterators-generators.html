@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Iterators and Generators Exercise</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .exercise-card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 { color: #333; }
+    h2 { color: #555; margin-top: 0; }
+    code {
+      background-color: #282c34;
+      color: #abb2bf;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    pre {
+      background-color: #282c34;
+      color: #e06c75;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    .output {
+      background-color: #2d3a4b;
+      color: #79c0ff;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    .hint {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 10px;
+      margin: 15px 0;
+      color: #856404;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔁 JavaScript Iterators and Generators Exercise</h1>
+  
+  <div class="exercise-card">
+    <h2>Exercise 1: Iterator Protocol</h2>
+    <p>Use the Iterator protocol with a standard array.</p>
+    <pre>const numbers = [1, 2, 3, 4, 5];
+
+const iterator = numbers[Symbol.iterator]();
+console.log('First:', next(iterator).value);
+console.log('Second:', next(iterator).value);
+console.log('Third:', next(iterator).value);</pre>
+    <div class="output">Output:</div>
+    <p>First: <span id="result1"></span>, Second: <span id="result2"></span>, Third: <span id="result3"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 2: for...of Loop</h2>
+    <p>Use for...of to iterate over an array.</p>
+    <pre>const fruits = ['apple', 'banana', 'cherry'];
+
+for (const fruit of fruits) {
+  console.log('Fruit:', fruit);
+}</pre>
+    <div class="output">Output Order:</div>
+    <ol id="result4"></ol>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 3: Array.from</h2>
+    <p>Create an array from an iterable.</p>
+    <pre>const set = new Set([1, 2, 3, 2, 1]);
+const array = [...set];
+console.log('Array:', array);</pre>
+    <div class="output">Output:</div>
+    <p>Array: <span id="result5"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 4: Array.from with Callback</h2>
+    <p>Create an array using Array.from with a callback.</p>
+    <pre>const square = Array.from([1, 2, 3], n => n * n);
+console.log('Squared:', square);</pre>
+    <div class="output">Output:</div>
+    <p>Squared: <span id="result6"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 5: Array.from with Map</h2>
+    <p>Create an array from a Map.</p>
+    <pre>const map = new Map([
+  ['one', 1],
+  ['two', 2],
+  ['three', 3]
+]);
+
+const array = Array.from(map);
+console.log('Map array:', array);</pre>
+    <div class="output">Output:</div>
+    <p>Map array: <span id="result7"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 6: Map.from</h2>
+    <p>Create a Map from an iterable of arrays.</p>
+    <pre>const map = new Map([['a', 1], ['b', 2], ['c', 3]]);
+console.log('Map:', map);</pre>
+    <div class="output">Output:</div>
+    <p>Map: <span id="result8"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 7: Set.from</h2>
+    <p>Create a Set from an iterable.</p>
+    <pre>const set = new Set([1, 2, 2, 3, 3, 3]);
+console.log('Set:', set);</pre>
+    <div class="output">Output:</div>
+    <p>Set: <span id="result9"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 8: Generator Function</h2>
+    <p>Create a generator function.</p>
+    <pre>function* countUp() {
+  for (let i = 1; i <= 3; i++) {
+    yield i;
+  }
+}
+
+const gen = countUp();
+console.log('First:', next(gen).value);
+console.log('Second:', next(gen).value);
+console.log('Third:', next(gen).value);</pre>
+    <div class="output">Output:</div>
+    <p>First: <span id="result10"></span>, Second: <span id="result11"></span>, Third: <span id="result12"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 9: yield with return</h2>
+    <p>Use yield with a return statement.</p>
+    <pre>function* numbers() {
+  yield 1;
+  yield 2;
+  return 'done';
+}
+
+const gen = numbers();
+console.log('First:', next(gen).value);
+console.log('Second:', next(gen).value);
+console.log('Third:', next(gen).value);</pre>
+    <div class="output">Output:</div>
+    <p>First: <span id="result13"></span>, Second: <span id="result14"></span>, Third: <span id="result15"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 10: async Generator</h2>
+    <p>Create an async generator function.</p>
+    <pre>async function* asyncGen() {
+  for (let i = 1; i <= 3; i++) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+    yield i;
+  }
+}
+
+const gen = asyncGen();
+console.log('First:', next(gen).value);
+console.log('Second:', next(gen).value);
+console.log('Third:', next(gen).value);</pre>
+    <div class="output">Output Order:</div>
+    <ol id="result16"></ol>
+  </div>
+
+  <script>
+    // Exercise 1
+    const numbers = [1, 2, 3, 4, 5];
+    const iterator = numbers[Symbol.iterator]();
+    document.getElementById('result1').textContent = next(iterator).value;
+    document.getElementById('result2').textContent = next(iterator).value;
+    document.getElementById('result3').textContent = next(iterator).value;
+
+    // Exercise 4
+    const square = Array.from([1, 2, 3], n => n * n);
+    document.getElementById('result6').textContent = JSON.stringify(square);
+
+    // Exercise 5
+    const set = new Set([1, 2, 3, 2, 1]);
+    const array = [...set];
+    document.getElementById('result5').textContent = JSON.stringify(array);
+
+    // Exercise 6
+    const map = new Map([['a', 1], ['b', 2], ['c', 3]]);
+    const array6 = Array.from(map);
+    document.getElementById('result7').textContent = JSON.stringify(array6);
+
+    // Exercise 8
+    function* countUp() {
+      for (let i = 1; i <= 3; i++) {
+        yield i;
+      }
+    }
+    const gen = countUp();
+    document.getElementById('result10').textContent = next(gen).value;
+    document.getElementById('result11').textContent = next(gen).value;
+    document.getElementById('result12').textContent = next(gen).value;
+
+    // Exercise 9
+    function* numbers() {
+      yield 1;
+      yield 2;
+      return 'done';
+    }
+    const gen9 = numbers();
+    document.getElementById('result13').textContent = next(gen9).value;
+    document.getElementById('result14').textContent = next(gen9).value;
+    document.getElementById('result15').textContent = next(gen9).value;
+
+    // Exercise 10
+    const events16 = [];
+    (function() {
+      events16.push('First: ' + next(next(async function* asyncGen() {
+        for (let i = 1; i <= 3; i++) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+          yield i;
+        }
+      })()).value);
+      events16.push('Second: ' + next(next(asyncGen)).value);
+      events16.push('Third: ' + next(next(asyncGen)).value);
+    })();
+    document.getElementById('result16').innerHTML = events16.join('<br>');
+  </script>
+</body>
+</html>

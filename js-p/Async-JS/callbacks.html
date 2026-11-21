@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Callbacks Exercise</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .exercise-card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 { color: #333; }
+    h2 { color: #555; margin-top: 0; }
+    code {
+      background-color: #282c34;
+      color: #abb2bf;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    pre {
+      background-color: #282c34;
+      color: #e06c75;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    .output {
+      background-color: #2d3a4b;
+      color: #79c0ff;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    .hint {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 10px;
+      margin: 15px 0;
+      color: #856404;
+    }
+  </style>
+</head>
+<body>
+  <h1>📞 JavaScript Callbacks Exercise</h2>
+  
+  <div class="exercise-card">
+    <h2>Exercise 1: Basic Callback Function</h2>
+    <p>Pass a function as an argument to another function.</p>
+    <pre>function greet(name) {
+  return 'Hello, ' + name + '!';
+}
+
+function sendGreeting(greetingFunction) {
+  const name = 'Alice';
+  const message = greetingFunction(name);
+  console.log(message);
+}
+
+sendGreeting(greet);</pre>
+    <div class="output">Output:</div>
+    <p>Hello, Alice!</p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 2: Callback with Arguments</h2>
+    <p>Pass a function that accepts arguments.</p>
+    <pre>function multiply(a, b) {
+  return a * b;
+}
+
+function addNumbers(a, b) {
+  return multiply(a, b);
+}
+
+const result = addNumbers(5, 3);
+console.log('Result:', result);</pre>
+    <div class="output">Output: Result = <span id="result2"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 3: Nested Callbacks</h2>
+    <p>Use callbacks within callbacks.</p>
+    <pre>function process(data) {
+  return function(callback) {
+    return callback(data);
+  };
+}
+
+function calculate(value) {
+  return value * 2;
+}
+
+const result = process(5)(calculate);
+console.log('Result:', result);</pre>
+    <div class="output">Output: Result = <span id="result3"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 4: Callback with Delay</h2>
+    <p>Use setTimeout as a callback.</p>
+    <pre>function delayedCallback(callback, delay) {
+  setTimeout(callback, delay);
+}
+
+delayedCallback(() => {
+  console.log('Delayed message');
+}, 1000);</pre>
+    <div class="output">Output: Delayed message</div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 5: Callback with Error Handling</h2>
+    <p>Handle errors in callback functions.</p>
+    <pre>function safeCallback(callback) {
+  try {
+    callback();
+  } catch (error) {
+    console.log('Error caught:', error);
+  }
+}
+
+safeCallback(() => {
+  console.log('Success!');
+});</pre>
+    <div class="output">Output: Success!</div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 6: Callback with Multiple Parameters</h2>
+    <p>Pass a function with multiple parameters to another function.</p>
+    <pre>function logValues(a, b, c) {
+  return function(callback) {
+    callback(a, b, c);
+  };
+}
+
+const result = logValues(1, 2, 3)((x, y, z) => {
+  console.log('x=' + x + ', y=' + y + ', z=' + z);
+});
+
+result();</pre>
+    <div class="output">Output: x=1, y=2, z=3</div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 7: Callback Pattern (Callback Hell)</h2>
+    <p>Identify the callback hell pattern (nested callbacks).</p>
+    <pre>function step1() {
+  return function(callback) {
+    setTimeout(() => {
+      console.log('Step 1 completed');
+      callback(function(callback2) {
+        setTimeout(() => {
+          console.log('Step 2 completed');
+          callback2(function(callback3) {
+            setTimeout(() => {
+              console.log('Step 3 completed');
+              callback3();
+            }, 100);
+          });
+        }, 100);
+      });
+    }, 100);
+  };
+}
+
+step1()(step2()(step3()));</pre>
+    <div class="output">Output Order:</div>
+    <ol id="result7"></ol>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 8: Callback Chaining</h2>
+    <p>Chain callback functions together.</p>
+    <pre>function processData(input) {
+  return function(callback) {
+    const result = input + 10;
+    callback(result);
+  };
+}
+
+const result = processData(5)(function(value) {
+  console.log('Result:', value);
+});</pre>
+    <div class="output">Output: Result = <span id="result8"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 9: Callback with Return Value</h2>
+    <p>Return a value from a callback function.</p>
+    <pre>function sum(a, b, callback) {
+  const result = a + b;
+  callback(result);
+  return result;
+}
+
+const result = sum(3, 4, function(value) {
+  console.log('Sum:', value);
+});</pre>
+    <div class="output">Output: Sum = <span id="result9"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 10: Callback with Multiple Returns</h2>
+    <p>Return multiple values through callbacks.</p>
+    <pre>function operation(a, b, callback) {
+  const sum = a + b;
+  const product = a * b;
+  callback(sum, product);
+}
+
+const result = operation(2, 3, function(s, p) {
+  console.log('Sum:', s, 'Product:', p);
+});</pre>
+    <div class="output">Output: Sum = 5, Product = 6</div>
+  </div>
+
+  <script>
+    // Exercise 2
+    function multiply(a, b) { return a * b; }
+    function addNumbers(a, b) { return multiply(a, b); }
+    document.getElementById('result2').textContent = addNumbers(5, 3);
+
+    // Exercise 3
+    function process(data) {
+      return function(callback) { return callback(data); };
+    }
+    function calculate(value) { return value * 2; }
+    document.getElementById('result3').textContent = process(5)(calculate);
+
+    // Exercise 7
+    const result7 = [];
+    (function() {
+      result7.push('Step 1 completed');
+      setTimeout(() => {
+        result7.push('Step 2 completed');
+        setTimeout(() => {
+          result7.push('Step 3 completed');
+        }, 100);
+      }, 100);
+    })();
+    document.getElementById('result7').innerHTML = result7.join('<br>');
+
+    // Exercise 8
+    function processData(input) {
+      return function(callback) {
+        const result = input + 10;
+        callback(result);
+      };
+    }
+    const result8 = processData(5)(function(value) {
+      document.getElementById('result8').textContent = 'Result: ' + value;
+    });
+
+    // Exercise 9
+    function sum(a, b, callback) {
+      const result = a + b;
+      callback(result);
+      return result;
+    }
+    document.getElementById('result9').textContent = sum(3, 4, function(value) {
+      document.getElementById('result9').textContent = 'Sum: ' + value;
+    });
+  </script>
+</body>
+</html>

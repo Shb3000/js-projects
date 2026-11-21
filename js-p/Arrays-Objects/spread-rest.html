@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Spread and Rest Operator Exercise</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .exercise-card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 { color: #333; }
+    h2 { color: #555; margin-top: 0; }
+    code {
+      background-color: #282c34;
+      color: #abb2bf;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    pre {
+      background-color: #282c34;
+      color: #e06c75;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    .output {
+      background-color: #2d3a4b;
+      color: #79c0ff;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    .hint {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 10px;
+      margin: 15px 0;
+      color: #856404;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔀 JavaScript Spread and Rest Operator Exercise</h1>
+  
+  <div class="exercise-card">
+    <h2>Exercise 1: Spread Operator with Arrays</h2>
+    <p>Use the spread operator to concatenate two arrays.</p>
+    <pre>const arr1 = [1, 2, 3];
+const arr2 = [4, 5, 6];
+const combined = [...arr1, ...arr2];</pre>
+    <div class="output">Output: Combined array = <span id="result1"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 2: Merge Two Objects</h2>
+    <p>Use the spread operator to merge two objects into one.</p>
+    <pre>const obj1 = { name: 'Alice', age: 25 };
+const obj2 = { city: 'NYC', country: 'USA' };
+const merged = { ...obj1, ...obj2 };</pre>
+    <div class="output">Output: Name = <span id="result2name"></span>, Age = <span id="result2age"></span>, City = <span id="result2city"></span>, Country = <span id="result2country"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 3: Rest Parameter with Array Concatenation</h2>
+    <p>Use rest parameters to concatenate multiple arrays passed as function arguments.</p>
+    <pre>function combine(...arrays) {
+  return arrays.flat();
+}</pre>
+    <div class="output">Output: combine([1,2], [3,4], [5,6]) = <span id="result3"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 4: Copy Array with Spread</h2>
+    <p>Create a copy of an array using the spread operator.</p>
+    <pre>const original = [10, 20, 30];
+const copy = [...original];
+copy[0] = 999;</pre>
+    <div class="output">Output: Original[0] = <span id="result4original"></span>, Copy[0] = <span id="result4copy"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 5: Rest Parameter with Function</h2>
+    <p>Use rest parameters to collect remaining function arguments.</p>
+    <pre>function multiply(numbers) {
+  let result = 1;
+  for (let num of numbers) {
+    result *= num;
+  }
+  return result;
+}</pre>
+    <div class="output">Output: multiply(2, 3, 4) = <span id="result5"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 6: Spread in Array Method</h2>
+    <p>Use spread operator in the map function to create new objects.</p>
+    <pre>const numbers = [1, 2, 3];
+const doubled = numbers.map(num => ({ value: num, doubled: num * 2 }));</pre>
+    <div class="output">Output: <span id="result6"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 7: Combining Spread and Rest</h2>
+    <p>Use both spread and rest operators to manipulate arrays.</p>
+    <pre>const arr1 = [1, 2, 3];
+const arr2 = [4, 5];
+const newArr = [...arr1, ...arr2, 6, ...arr2];</pre>
+    <div class="output">Output: New array = <span id="result7"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 8: Spread in Object Constructor</h2>
+    <p>Use spread operator with object constructor to create new objects.</p>
+    <pre>const user1 = { firstName: 'John', lastName: 'Doe' };
+const user2 = new Object({ ...user1, age: 30 });</pre>
+    <div class="output">Output: firstName = <span id="result8firstName"></span>, lastName = <span id="result8lastName"></span>, age = <span id="result8age"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 9: Rest Parameter with Default</h2>
+    <p>Use rest parameters with default values.</p>
+    <pre>function sum(a = 0, b = 0, ...rest) {
+  return a + b + rest.reduce((sum, val) => sum + val, 0);
+}</pre>
+    <div class="output">Output: sum(10, 20) = <span id="result9"></span>, sum(1, 2, 3, 4) = <span id="result9b"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 10: Spread in Object Destructuring</h2>
+    <p>Use spread operator in object destructuring to copy properties.</p>
+    <pre>const original = { x: 1, y: 2, z: 3 };
+const { x, ...rest } = original;
+const copied = { ...rest };</pre>
+    <div class="output">Output: Original z = <span id="result10originalz"></span>, Copied z = <span id="result10copiedz"></span></div>
+  </div>
+
+  <script>
+    // Exercise 1
+    const arr1 = [1, 2, 3];
+    const arr2 = [4, 5, 6];
+    const combined = [...arr1, ...arr2];
+    document.getElementById('result1').textContent = JSON.stringify(combined);
+
+    // Exercise 2
+    const obj1 = { name: 'Alice', age: 25 };
+    const obj2 = { city: 'NYC', country: 'USA' };
+    const merged = { ...obj1, ...obj2 };
+    document.getElementById('result2name').textContent = merged.name;
+    document.getElementById('result2age').textContent = merged.age;
+    document.getElementById('result2city').textContent = merged.city;
+    document.getElementById('result2country').textContent = merged.country;
+
+    // Exercise 3
+    function combine(...arrays) {
+      return arrays.flat();
+    }
+    document.getElementById('result3').textContent = JSON.stringify(combine([1,2], [3,4], [5,6]));
+
+    // Exercise 4
+    const original = [10, 20, 30];
+    const copy = [...original];
+    copy[0] = 999;
+    document.getElementById('result4original').textContent = original[0];
+    document.getElementById('result4copy').textContent = copy[0];
+
+    // Exercise 5
+    function multiply(numbers) {
+      let result = 1;
+      for (let num of numbers) {
+        result *= num;
+      }
+      return result;
+    }
+    document.getElementById('result5').textContent = multiply(2, 3, 4);
+
+    // Exercise 6
+    const numbers = [1, 2, 3];
+    const doubled = numbers.map(num => ({ value: num, doubled: num * 2 }));
+    document.getElementById('result6').textContent = JSON.stringify(doubled);
+
+    // Exercise 7
+    const arr1 = [1, 2, 3];
+    const arr2 = [4, 5];
+    const newArr = [...arr1, ...arr2, 6, ...arr2];
+    document.getElementById('result7').textContent = JSON.stringify(newArr);
+
+    // Exercise 8
+    const user1 = { firstName: 'John', lastName: 'Doe' };
+    const user2 = new Object({ ...user1, age: 30 });
+    document.getElementById('result8firstName').textContent = user2.firstName;
+    document.getElementById('result8lastName').textContent = user2.lastName;
+    document.getElementById('result8age').textContent = user2.age;
+
+    // Exercise 9
+    function sum(a = 0, b = 0, ...rest) {
+      return a + b + rest.reduce((sum, val) => sum + val, 0);
+    }
+    document.getElementById('result9').textContent = sum(10, 20);
+    document.getElementById('result9b').textContent = sum(1, 2, 3, 4);
+
+    // Exercise 10
+    const original = { x: 1, y: 2, z: 3 };
+    const { x, ...rest } = original;
+    const copied = { ...rest };
+    document.getElementById('result10originalz').textContent = original.z;
+    document.getElementById('result10copiedz').textContent = copied.z;
+  </script>
+</body>
+</html>

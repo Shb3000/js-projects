@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Travel Helper</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, sans-serif; background: #f2f5f8; color: #222; }
+  header { background: #1f5c7a; color: #fff; padding: 14px 24px; }
+  header h1 { margin: 0; font-size: 20px; }
+  main { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 980px; margin: 18px auto; padding: 0 16px; }
+  .panel { background: #fff; border-radius: 8px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .panel h2 { margin: 0 0 12px; font-size: 17px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  input, select { padding: 9px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+  input[type=text] { flex: 1; min-width: 160px; }
+  input[type=number] { width: 120px; }
+  button { background: #1f5c7a; color: #fff; border: 0; border-radius: 4px; padding: 9px 14px; cursor: pointer; font-size: 14px; }
+  button:disabled { background: #9aa9b3; cursor: wait; }
+  .big { font-size: 40px; margin: 8px 0; }
+  .muted { color: #666; font-size: 13px; }
+  .result { font-size: 22px; font-weight: bold; margin: 10px 0 4px; }
+  .error { color: #a02020; font-size: 14px; margin-top: 8px; }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Travel Helper</h1>
+</header>
+
+<main>
+  <section class="panel">
+    <h2>Weather now</h2>
+    <form id="weatherForm" class="row">
+      <input type="text" id="cityInput" placeholder="City name, e.g. Bushehr" value="Bushehr">
+      <button type="submit" id="weatherBtn">Check</button>
+    </form>
+    <div id="weatherResult"><p class="muted">Loading weather...</p></div>
+    <p class="muted">Weather data: Open-Meteo (open-meteo.com)</p>
+  </section>
+
+  <section class="panel">
+    <h2>Currency converter</h2>
+    <form id="currencyForm" class="row">
+      <input type="number" id="amount" value="100" min="0" step="any">
+      <select id="from"></select>
+      <span style="align-self:center">to</span>
+      <select id="to"></select>
+    </form>
+    <div id="currencyResult"><p class="muted">Loading rates...</p></div>
+    <p class="muted" id="ratesNote"></p>
+    <p class="muted">Rates: open.er-api.com</p>
+  </section>
+
+  <p id="globalError" class="error" style="grid-column: 1 / -1;"></p>
+</main>
+<script>
+  const CURRENCIES = ["USD", "EUR", "GBP", "IRR", "AED", "TRY"];
+
+  // fetch, check the status, parse the json
+  async function getJSON(url) {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Server answered " + res.status);
+    return res.json();
+  }
+
+  // Maps Open-Meteo weather codes to plain words
+  function describe(code) {
+    if (code === 0) return "Clear sky";
+    if (code <= 3) return "Partly cloudy";
+    if (code <= 48) return "Fog";
+    if (code <= 67) return "Rain";
+    if (code <= 77) return "Snow";
+    if (code <= 82) return "Rain showers";
+    if (code <= 86) return "Snow showers";
+    return "Thunderstorm";
+  }
+
+  // API 1: city name -> coordinates
+  async function findCity(name) {
+    const url = "https://geocoding-api.open-meteo.com/v1/search?count=1&name=" + encodeURIComponent(name);
+    const data = await getJSON(url);
+    if (!data.results || data.results.length === 0) {
+      throw new Error('No city found for "' + name + '"');
+    }
+    const { name: city, country, latitude, longitude } = data.results[0];
+    return { city, country, latitude, longitude };
+  }
+
+  // API 1, step 2: current weather for those coordinates
+  async function getWeather(place) {
+    const url = "https://api.open-meteo.com/v1/forecast?current_weather=true"
+      + "&latitude=" + place.latitude + "&longitude=" + place.longitude;
+    const data = await getJSON(url);
+    const { temperature, windspeed, weathercode, time } = data.current_weather;
+    return { ...place, temperature, windspeed, weathercode, time };
+  }
+
+  // Runs the two requests in order: find the city, then get its weather
+  async function checkWeather(name) {
+    const place = await findCity(name);
+    return getWeather(place);
+  }
+
+  // API 2: exchange rates. Loaded once and kept, so changing the amount does not fetch again.
+  let rateCache = null;
+
+  async function loadRates() {
+    if (rateCache) return rateCache;
+    const data = await getJSON("https://open.er-api.com/v6/latest/USD");
+    if (data.result !== "success") throw new Error("Currency service failed");
+    rateCache = { rates: data.rates, updated: data.time_last_update_utc };
+    return rateCache;
+  }
+
+  function showError(message) {
+    document.getElementById("globalError").textContent = message;
+  }
+
+  function clearError() {
+    document.getElementById("globalError").textContent = "";
+  }
+
+  function renderWeather(w) {
+    const box = document.getElementById("weatherResult");
+    box.innerHTML = "";
+
+    const place = document.createElement("div");
+    place.className = "result";
+    place.textContent = w.city + ", " + w.country;
+
+    const temp = document.createElement("div");
+    temp.className = "big";
+    temp.textContent = Math.round(w.temperature) + " °C";
+
+    const details = document.createElement("p");
+    details.textContent = describe(w.weathercode) + " · wind " + w.windspeed + " km/h";
+
+    const time = document.createElement("p");
+    time.className = "muted";
+    time.textContent = "Updated " + w.time.replace("T", " ");
+
+    box.append(place, temp, details, time);
+  }
+
+  function renderConversion(rateData) {
+    const amount = Number(document.getElementById("amount").value);
+    const from = document.getElementById("from").value;
+    const to = document.getElementById("to").value;
+    const { rates, updated } = rateData;
+
+    // Rates are all relative to USD, so go through USD: amount in "from" -> USD -> "to"
+    const value = (amount / rates[from]) * rates[to];
+
+    document.getElementById("currencyResult").innerHTML = "";
+    const line = document.createElement("div");
+    line.className = "result";
+    line.textContent = amount.toLocaleString() + " " + from + " = " + value.toLocaleString(undefined, { maximumFractionDigits: 2 }) + " " + to;
+    document.getElementById("currencyResult").appendChild(line);
+
+    document.getElementById("ratesNote").textContent = "Rates updated: " + updated;
+  }
+
+  // Fills both currency dropdowns from the list
+  function fillCurrencySelects() {
+    const from = document.getElementById("from");
+    const to = document.getElementById("to");
+    CURRENCIES.forEach(code => {
+      from.append(new Option(code, code));
+      to.append(new Option(code, code));
+    });
+    from.value = "USD";
+    to.value = "IRR";
+  }
+
+  // Weather search: disable the button while it runs, show errors if it fails
+  async function onWeatherSubmit(e) {
+    e.preventDefault();
+    const name = document.getElementById("cityInput").value.trim();
+    if (!name) return;
+
+    const btn = document.getElementById("weatherBtn");
+    btn.disabled = true;
+    document.getElementById("weatherResult").innerHTML = "<p class='muted'>Loading weather...</p>";
+    clearError();
+
+    try {
+      renderWeather(await checkWeather(name));
+    } catch (err) {
+      document.getElementById("weatherResult").innerHTML = "";
+      showError("Weather: " + err.message);
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  // Currency: re-convert when the amount or a currency changes (uses the cached rates)
+  async function onCurrencyChange() {
+    try {
+      const data = await loadRates();
+      renderConversion(data);
+    } catch (err) {
+      document.getElementById("currencyResult").innerHTML = "";
+      showError("Currency: " + err.message);
+    }
+  }
+
+  document.getElementById("weatherForm").addEventListener("submit", onWeatherSubmit);
+  document.getElementById("currencyForm").addEventListener("input", onCurrencyChange);
+  document.getElementById("currencyForm").addEventListener("change", onCurrencyChange);
+
+  // Start: load the default city weather and the rates at the same time
+  async function start() {
+    fillCurrencySelects();
+    const [weather, rates] = await Promise.allSettled([
+      checkWeather(document.getElementById("cityInput").value.trim()),
+      loadRates()
+    ]);
+
+    if (weather.status === "fulfilled") {
+      renderWeather(weather.value);
+    } else {
+      document.getElementById("weatherResult").innerHTML = "";
+      showError("Weather: " + weather.reason.message);
+    }
+
+    if (rates.status === "fulfilled") {
+      renderConversion(rates.value);
+    } else {
+      document.getElementById("currencyResult").innerHTML = "";
+      showError("Currency: " + rates.reason.message);
+    }
+  }
+
+  start();
+</script>
+</body>
+</html>

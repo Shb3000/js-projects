@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #27ae60 0%, #219150 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 750px;
+        }
+        
+        h1 {
+            color: #27ae60;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .example-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .example-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .code-block .function {
+            color: #6366f1;
+        }
+        
+        .code-block .variable {
+            color: #228be6;
+        }
+        
+        .code-block .keyword {
+            color: #dc3545;
+        }
+        
+        .output {
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .output strong {
+            color: #27ae60;
+        }
+        
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        button {
+            padding: 15px 25px;
+            border: 2px solid #27ae60;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background: #27ae60;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .info-box {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            color: #155724;
+            line-height: 1.8;
+        }
+        
+        .info-box h3 {
+            color: #155724;
+            margin-bottom: 15px;
+        }
+        
+        .info-box code {
+            background: #27ae60;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>JSON Practice</h1>
+        <p>Learn how to convert JavaScript objects to JSON and back using parse and stringify!</p>
+        
+        <div class="btn-group">
+            <button onclick="runExample1()">Example 1: Stringify Basic Object</button>
+            <button onclick="runExample2()">Example 2: Parse JSON String</button>
+            <button onclick="runExample3()">Example 3: Nested Objects</button>
+            <button onclick="runExample4()">Example 4: Array in JSON</button>
+            <button onclick="runExample5()">Example 5: Complex Data</button>
+            <button onclick="runExample6()">Example 6: Real-world Application</button>
+        </div>
+        
+        <div id="output" class="output">
+            <strong>Click a button to see JSON examples!</strong>
+        </div>
+        
+        <div class="info-box">
+            <h3>🔧 Understanding JSON</h3>
+            <p>
+                <strong>JSON.stringify():</strong> Converts a JavaScript object to a JSON string<br>
+                <strong>JSON.parse()::</strong> Parses a JSON string back to a JavaScript object
+            </p>
+            <ul>
+                <li>JSON supports: strings, numbers, booleans, null, arrays, and objects</li>
+                <li>JSON does NOT support: functions, dates, undefined, symbols, Map, Set</li>
+                <li>Useful for: storing data in localStorage, sending data via HTTP</li>
+            </ul>
+        </div>
+        
+        <div class="code-block">
+            <span class="comment">// Examples will appear here...</span>
+        </div>
+    </div>
+    
+    <script>
+        // Example 1: Stringify Basic Object
+        function runExample1() {
+            const code = `
+<span class="comment">// Example 1: Stringify Basic Object</span>
+const user = {
+    name: 'Alice',
+    age: 25,
+    active: true
+};
+
+const json = JSON.stringify(user);
+console.log(json); // {"name":"Alice","age":25,"active":true}
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: {"name":"Alice","age":25,"active":true}</strong><br>
+                               <code>JSON.stringify()</code> converts object to a string.`;
+        }
+        
+        // Example 2: Parse JSON String
+        function runExample2() {
+            const code = `
+<span class="comment">// Example 2: Parse JSON String</span>
+const jsonString = '{"name":"Bob","age":30,"city":"NYC"}';
+
+const user = JSON.parse(jsonString);
+console.log(user.name); // "Bob"
+console.log(user.age);  // 30
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Results: "Bob", 30</strong><br>
+                               <code>JSON.parse()</code> converts string back to object.`;
+        }
+        
+        // Example 3: Nested Objects
+        function runExample3() {
+            const code = `
+<span class="comment">// Example 3: Nested Objects</span>
+const person = {
+    name: 'Charlie',
+    address: {
+        city: 'Boston',
+        zip: '02101'
+    }
+};
+
+const json = JSON.stringify(person);
+const parsed = JSON.parse(json);
+console.log(parsed.address.city); // "Boston"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "Boston"</strong><br>
+                               Nested objects are preserved through stringify/parse.`;
+        }
+        
+        // Example 4: Array in JSON
+        function runExample4() {
+            const code = `
+<span class="comment">// Example 4: Array in JSON</span>
+const numbers = [1, 2, 3, 4, 5];
+
+const json = JSON.stringify(numbers);
+const parsed = JSON.parse(json);
+console.log(parsed[0]); // 1
+console.log(parsed.length); // 5
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: 1, 5</strong><br>
+                               Arrays are converted to JSON arrays.`;
+        }
+        
+        // Example 5: Complex Data
+        function runExample5() {
+            const code = `
+<span class="comment">// Example 5: Complex Data</span>
+const data = {
+    name: 'David',
+    score: 95,
+    tags: ['dev', 'designer'],
+    active: false,
+    count: null
+};
+
+const json = JSON.stringify(data, null, 2); // pretty print
+const parsed = JSON.parse(json);
+console.log(parsed.tags); // ['dev', 'designer']
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: ["dev","designer"]</strong><br>
+                               The second parameter (null, 2) adds pretty-printing.`;
+        }
+        
+        // Example 6: Real-world Application
+        function runExample6() {
+            const code = `
+<span class="comment">// Example 6: Real-world Application (localStorage)</span>
+
+// Store data in localStorage
+const userData = { name: 'Eve', email: 'eve@example.com' };
+localStorage.setItem('user', JSON.stringify(userData));
+
+// Retrieve data from localStorage
+const stored = localStorage.getItem('user');
+const user = JSON.parse(stored);
+console.log(user.name); // "Eve"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "Eve"</strong><br>
+                               Perfect for persisting data in browser's localStorage.`;
+        }
+        
+        // Additional examples
+        function runExample7() {
+            const code = `
+<span class="comment">// Example 7: JSON with numbers as strings</span>
+const price = 99.99;
+const json = JSON.stringify(price);
+console.log(json); // "99.99" (string)
+const parsed = JSON.parse(json);
+console.log(typeof parsed); // "number"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "99.99", "number"</strong><br>
+                               JSON stores numbers as numbers, strings as strings.`;
+        }
+        
+        function runExample8() {
+            const code = `
+<span class="comment">// Example 8: What happens with functions?</span>
+const obj = {
+    name: 'Func',
+    func: function() { return 'Hello'; }
+};
+
+const json = JSON.stringify(obj);
+console.log(json); // {"name":"Func"} (function is lost!)
+const parsed = JSON.parse(json);
+console.log(parsed.func); // undefined
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: {"name":"Func"}, undefined</strong><br>
+                               Functions cannot be serialized to JSON!`;
+        }
+        
+        // Run all examples
+        const examples = [
+            { fn: runExample1, title: 'Example 1: Stringify Basic Object' },
+            { fn: runExample2, title: 'Example 2: Parse JSON String' },
+            { fn: runExample3, title: 'Example 3: Nested Objects' },
+            { fn: runExample4, title: 'Example 4: Array in JSON' },
+            { fn: runExample5, title: 'Example 5: Complex Data' },
+            { fn: runExample6, title: 'Example 6: Real-world Application' },
+            { fn: runExample7, title: 'Example 7: JSON with numbers as strings' },
+            { fn: runExample8, title: 'Example 8: What happens with functions?' }
+        ];
+        
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                const example = examples.find(ex => ex.title === btn.textContent.trim());
+                if (example) {
+                    example.fn();
+                }
+            });
+        });
+        
+        // Run all examples on page load
+        window.addEventListener('load', () => {
+            let count = 0;
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach((btn, index) => {
+                if (examples[index]) {
+                    setTimeout(() => {
+                        const example = examples[index];
+                        const title = btn.textContent.trim().split(':')[1];
+                        const output = document.getElementById('output');
+                        output.innerHTML = `<strong>${title}:</strong> See code block for details...`;
+                    }, count * 200);
+                    count++;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

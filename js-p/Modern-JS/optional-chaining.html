@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Optional Chaining Exercise</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .exercise-card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 { color: #333; }
+    h2 { color: #555; margin-top: 0; }
+    code {
+      background-color: #282c34;
+      color: #abb2bf;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    pre {
+      background-color: #282c34;
+      color: #e06c75;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    .output {
+      background-color: #2d3a4b;
+      color: #79c0ff;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    .hint {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 10px;
+      margin: 15px 0;
+      color: #856404;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔗 JavaScript Optional Chaining Exercise</h1>
+  
+  <div class="exercise-card">
+    <h2>Exercise 1: Basic Optional Chaining</h2>
+    <p>Use optional chaining to safely access nested properties.</p>
+    <pre>const user = {
+  name: 'Alice',
+  address: {
+    city: 'NYC',
+    country: 'USA'
+  }
+};
+
+const city = user.address?.city;
+console.log('City:', city);</pre>
+    <div class="output">Output:</div>
+    <p>City: <span id="result1"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 2: Optional Chaining with Null Object</h2>
+    <p>Use optional chaining with a null object.</p>
+    <pre>const user = null;
+const city = user?.address?.city;
+console.log('City:', city);</pre>
+    <div class="output">Output:</div>
+    <p>City: <span id="result2"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 3: Optional Chaining with Undefined</h2>
+    <p>Use optional chaining with undefined properties.</p>
+    <pre>const user = {
+  name: 'Bob'
+};
+
+const city = user.address?.city;
+const country = user.address?.country;
+console.log('City:', city);
+console.log('Country:', country);</pre>
+    <div class="output">Output:</div>
+    <p>City: <span id="result3city"></span>, Country: <span id="result3country"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 4: Optional Chaining with Default Value</h2>
+    <p>Use optional chaining with a default value.</p>
+    <pre>const user = null;
+const city = user?.address?.city ?? 'Unknown';
+console.log('City:', city);</pre>
+    <div class="output">Output:</div>
+    <p>City: <span id="result4"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 5: Optional Chaining with Nullish Coalescing</h2>
+    <p>Use nullish coalescing with optional chaining.</p>
+    <pre>const data = {
+  name: 'Charlie',
+  age: null,
+  email: undefined
+};
+
+const age = data.age ?? 0;
+const email = data.email || 'no-email';
+console.log('Age:', age);
+console.log('Email:', email);</pre>
+    <div class="output">Output:</div>
+    <p>Age: <span id="result5age"></span>, Email: <span id="result5email"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 6: Optional Chaining with Nested Objects</h2>
+    <p>Use optional chaining with deeply nested objects.</p>
+    <pre>const user = {
+  profile: {
+    bio: 'Developer',
+    social: {
+      twitter: '@dev',
+      github: null
+    }
+  }
+};
+
+const twitter = user.profile?.social?.twitter;
+const github = user.profile?.social?.github ?? 'no-github';
+console.log('Twitter:', twitter);
+console.log('GitHub:', github);</pre>
+    <div class="output">Output:</div>
+    <p>Twitter: <span id="result6twitter"></span>, GitHub: <span id="result6github"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 7: Optional Chaining with Array</h2>
+    <p>Use optional chaining with arrays and object properties.</p>
+    <pre>const user = {
+  profile: {
+    social: null
+  }
+};
+
+const twitter = user.profile?.social?.twitter ?? 'no-twitter';
+console.log('Twitter:', twitter);</pre>
+    <div class="output">Output:</div>
+    <p>Twitter: <span id="result7"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 8: Optional Chaining vs Traditional Access</h2>
+    <p>Compare optional chaining with traditional property access.</p>
+    <pre>const user = {
+  profile: {
+    bio: 'Tester'
+  }
+};
+
+// Traditional access (would throw error)
+// const bio = user.profile.bio;
+
+// Optional chaining (returns undefined)
+const bio1 = user.profile?.bio;
+
+// Optional chaining with default
+const bio2 = user.profile?.bio ?? 'no-bio';
+
+console.log('Bio with chaining:', bio1);
+console.log('Bio with default:', bio2);</pre>
+    <div class="output">Output:</div>
+    <p>Bio with chaining: <span id="result8"></span>, Bio with default: <span id="result8default"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 9: Optional Chaining in Function Call</h2>
+    <p>Use optional chaining in function calls.</p>
+    <pre>const user = {
+  name: 'Eve',
+  social: null
+};
+
+const greet = user?.social?.twitter ?? 'no-social';
+console.log('Greeting:', 'Hi ' + user.name + '! Follow me at ' + greet);</pre>
+    <div class="output">Output:</div>
+    <p>Greeting: <span id="result9"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 10: Optional Chaining with Method Call</h2>
+    <p>Use optional chaining with method calls.</p>
+    <pre>const user = {
+  profile: {
+    bio: 'Writer'
+  }
+};
+
+const bio = user.profile?.bio;
+const bioLength = bio?.length ?? 0;
+console.log('Bio:', bio);
+console.log('Length:', bioLength);</pre>
+    <div class="output">Output:</div>
+    <p>Bio: <span id="result10bio"></span>, Length: <span id="result10length"></span></p>
+  </div>
+
+  <script>
+    // Exercise 1
+    const user1 = {
+      name: 'Alice',
+      address: {
+        city: 'NYC',
+        country: 'USA'
+      }
+    };
+    document.getElementById('result1').textContent = user1.address?.city;
+
+    // Exercise 2
+    const user2 = null;
+    document.getElementById('result2').textContent = user2?.address?.city;
+
+    // Exercise 3
+    const user3 = {
+      name: 'Bob'
+    };
+    document.getElementById('result3city').textContent = user3.address?.city;
+    document.getElementById('result3country').textContent = user3.address?.country;
+
+    // Exercise 4
+    document.getElementById('result4').textContent = null?.address?.city ?? 'Unknown';
+
+    // Exercise 5
+    const data = {
+      name: 'Charlie',
+      age: null,
+      email: undefined
+    };
+    document.getElementById('result5age').textContent = data.age ?? 0;
+    document.getElementById('result5email').textContent = data.email || 'no-email';
+
+    // Exercise 6
+    const user6 = {
+      profile: {
+        bio: 'Developer',
+        social: {
+          twitter: '@dev',
+          github: null
+        }
+      }
+    };
+    document.getElementById('result6twitter').textContent = user6.profile?.social?.twitter;
+    document.getElementById('result6github').textContent = user6.profile?.social?.github ?? 'no-github';
+
+    // Exercise 7
+    const user7 = {
+      profile: {
+        social: null
+      }
+    };
+    document.getElementById('result7').textContent = user7.profile?.social?.twitter ?? 'no-twitter';
+
+    // Exercise 8
+    const user8 = {
+      profile: {
+        bio: 'Tester'
+      }
+    };
+    document.getElementById('result8').textContent = user8.profile?.bio;
+    document.getElementById('result8default').textContent = user8.profile?.bio ?? 'no-bio';
+
+    // Exercise 9
+    const user9 = {
+      name: 'Eve',
+      social: null
+    };
+    const greet = user9?.social?.twitter ?? 'no-social';
+    document.getElementById('result9').textContent = 'Hi ' + user9.name + '! Follow me at ' + greet;
+
+    // Exercise 10
+    const user10 = {
+      profile: {
+        bio: 'Writer'
+      }
+    };
+    const bio10 = user10.profile?.bio;
+    document.getElementById('result10bio').textContent = bio10;
+    document.getElementById('result10length').textContent = bio10?.length ?? 0;
+  </script>
+</body>
+</html>

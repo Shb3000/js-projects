@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recipe Book</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, sans-serif; background: #faf7f2; color: #2b2b2b; }
+  header { background: #8a4b1f; color: #fff; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+  header h1 { margin: 0; font-size: 20px; }
+  main { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 1000px; margin: 18px auto; padding: 0 16px; }
+  .panel { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  input[type=search] { width: 100%; padding: 9px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+  .card { border: 1px solid #eee; border-radius: 6px; padding: 10px 12px; margin-top: 10px; cursor: pointer; }
+  .card:hover { background: #fdf6ee; }
+  .card.active { border-color: #8a4b1f; background: #fdf6ee; }
+  .card h3 { margin: 0 0 4px; font-size: 16px; }
+  .card p { margin: 0; font-size: 13px; color: #666; }
+  button { background: #8a4b1f; color: #fff; border: 0; border-radius: 4px; padding: 8px 12px; cursor: pointer; font-size: 14px; margin-top: 10px; }
+  button.ghost { background: #e5e7eb; color: #222; }
+  button:disabled { display: none; }
+  .muted { color: #888; font-size: 14px; }
+  .ing { font-size: 14px; padding: 3px 0; }
+  .list { font-size: 14px; line-height: 1.7; }
+  label { font-size: 14px; display: block; margin: 6px 0; }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Recipe Book</h1>
+  <span id="selectedCount"></span>
+</header>
+
+<main>
+  <section class="panel">
+    <input type="search" id="search" placeholder="Search recipes or cooks">
+    <div id="recipeList"></div>
+    <button id="moreBtn" class="ghost">Load more</button>
+    <p id="listNote" class="muted"></p>
+  </section>
+
+  <section class="panel" id="detail">
+    <p class="muted">Pick a recipe to see its details.</p>
+  </section>
+
+  <section class="panel" style="grid-column: 1 / -1;">
+    <h2 style="margin-top:0">Shopping list</h2>
+    <p class="muted">Tick recipes in the detail panel, then build the list.</p>
+    <button id="buildBtn">Build shopping list</button>
+    <div id="shopping" class="list"></div>
+  </section>
+</main>
+<script>
+  const PAGE_SIZE = 2;
+
+  // some recipes are missing the author / notes / rating on purpose
+  const recipes = [
+    { id: 1, title: "Lentil Soup", author: { name: "Maryam", kitchen: "Tehran" }, rating: 4.5, time: 40,
+      ingredients: [{ name: "lentils", qty: "1 cup" }, { name: "onion", qty: "1" }, { name: "garlic", qty: "2 cloves" }],
+      notes: "Add lemon at the end." },
+    { id: 2, title: "Pancakes", author: null, rating: 4, time: 20,
+      ingredients: [{ name: "flour", qty: "1 cup" }, { name: "egg", qty: "1" }, { name: "milk", qty: "1 cup" }] },
+    { id: 3, title: "Rice Pilaf", author: { name: "Ali" }, rating: null, time: 50,
+      ingredients: [{ name: "rice", qty: "2 cups" }, { name: "onion", qty: "1" }, { name: "butter", qty: "2 tbsp" }],
+      notes: "" },
+    { id: 4, title: "Tomato Salad", author: { name: "Sara" }, rating: 3.5, time: 10,
+      ingredients: [{ name: "tomato", qty: "3" }, { name: "onion", qty: "1/2" }, { name: "lemon", qty: "1" }] },
+    { id: 5, title: "Banana Bread", author: { name: "Niloo", kitchen: "Shiraz" }, rating: 4.8, time: 70,
+      ingredients: [{ name: "banana", qty: "3" }, { name: "flour", qty: "2 cups" }, { name: "egg", qty: "1" }],
+      notes: "Ripe bananas work best." }
+  ];
+
+  const state = {
+    query: "",
+    pager: null,          // generator, gives the next page
+    activeId: null,
+    selected: new Set()   // recipe ids chosen for the shopping list
+  };
+
+  // Generator: produces one page at a time. Each call to next() gives the next page.
+  function* paginate(items, size) {
+    for (let i = 0; i < items.length; i += size) {
+      yield items.slice(i, i + size);
+    }
+  }
+
+  // Generator over every ingredient of every recipe in a list
+  function* allIngredients(list) {
+    for (const recipe of list) {
+      for (const item of recipe.ingredients) {
+        yield { ...item, from: recipe.title };
+      }
+    }
+  }
+
+  // Filtering: optional chaining on author, because some recipes have no author
+  function matches(recipe, query) {
+    const text = (recipe.title + " " + (recipe.author?.name ?? "")).toLowerCase();
+    return text.includes(query.toLowerCase());
+  }
+
+  function visibleRecipes() {
+    return recipes.filter(r => matches(r, state.query));
+  }
+
+  function resetPager() {
+    state.pager = paginate(visibleRecipes(), PAGE_SIZE);
+    document.getElementById("recipeList").innerHTML = "";
+    loadMore();
+  }
+
+  function loadMore() {
+    const { value, done } = state.pager.next();
+    const moreBtn = document.getElementById("moreBtn");
+    const note = document.getElementById("listNote");
+
+    if (!done) {
+      value.forEach(renderCard);
+    }
+
+    moreBtn.style.display = done ? "none" : "inline-block";
+    const shown = document.querySelectorAll(".card").length;
+    const total = visibleRecipes().length;
+    note.textContent = total === 0 ? "No recipes match." : `Showing ${shown} of ${total}`;
+  }
+
+  function renderCard(recipe) {
+    const card = document.createElement("div");
+    card.className = "card" + (recipe.id === state.activeId ? " active" : "");
+    card.dataset.id = recipe.id;
+
+    // Optional chaining and ??: missing values get a readable fallback
+    const cook = recipe.author?.name ?? "Unknown cook";
+    const rating = recipe.rating ?? "not rated";
+
+    card.innerHTML = `
+      <h3>${recipe.title}</h3>
+      <p>${cook} · ${recipe.time} min · rating: ${rating}</p>`;
+    document.getElementById("recipeList").appendChild(card);
+  }
+
+  function showDetail(id) {
+    state.activeId = id;
+    const recipe = recipes.find(r => r.id === id);
+    const picked = state.selected.has(id);
+
+    // Optional chaining on notes: the field can be missing or empty
+    const note = recipe.notes?.trim();
+
+    const ingredients = recipe.ingredients
+      .map(item => `<div class="ing">${item.qty} ${item.name}</div>`)
+      .join("");
+
+    document.getElementById("detail").innerHTML = `
+      <h2 style="margin-top:0">${recipe.title}</h2>
+      <p class="muted">By ${recipe.author?.name ?? "Unknown"}${recipe.author?.kitchen ? ", " + recipe.author.kitchen : ""}</p>
+      <p>${note ? "Note: " + note : "No notes yet."}</p>
+      <h3>Ingredients</h3>
+      ${ingredients}
+      <label><input type="checkbox" data-pick="${id}" ${picked ? "checked" : ""}> Add to shopping list</label>`;
+
+    document.querySelectorAll(".card").forEach(card => {
+      card.classList.toggle("active", Number(card.dataset.id) === id);
+    });
+    updateSelectedCount();
+  }
+
+  function updateSelectedCount() {
+    document.getElementById("selectedCount").textContent = state.selected.size + " recipe(s) selected";
+  }
+
+  // Map counts how many chosen recipes need each ingredient
+  function buildShoppingList() {
+    const chosen = recipes.filter(r => state.selected.has(r.id));
+    const counts = new Map();
+
+    for (const { name } of allIngredients(chosen)) {
+      counts.set(name, (counts.get(name) ?? 0) + 1);
+    }
+
+    const out = document.getElementById("shopping");
+    if (counts.size === 0) {
+      out.innerHTML = "<p class='muted'>Nothing selected yet.</p>";
+      return;
+    }
+
+    // Object shorthand and template literal for each row
+    const rows = [...counts].map(([name, count]) => {
+      const usedIn = count > 1 ? ` (used in ${count} recipes)` : "";
+      return `<div>[ ] ${name}${usedIn}</div>`;
+    });
+    out.innerHTML = rows.join("");
+  }
+
+  // Events
+  document.getElementById("search").addEventListener("input", e => {
+    state.query = e.target.value.trim();
+    resetPager();
+  });
+
+  document.getElementById("moreBtn").addEventListener("click", loadMore);
+
+  document.getElementById("recipeList").addEventListener("click", e => {
+    const card = e.target.closest(".card");
+    if (card) showDetail(Number(card.dataset.id));
+  });
+
+  document.getElementById("detail").addEventListener("change", e => {
+    const id = Number(e.target.dataset.pick);
+    if (!id) return;
+    if (e.target.checked) state.selected.add(id);
+    else state.selected.delete(id);
+    updateSelectedCount();
+  });
+
+  document.getElementById("buildBtn").addEventListener("click", buildShoppingList);
+
+  resetPager();
+  updateSelectedCount();
+</script>
+</body>
+</html>

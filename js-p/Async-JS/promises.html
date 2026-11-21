@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Promises Exercise</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .exercise-card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 { color: #333; }
+    h2 { color: #555; margin-top: 0; }
+    code {
+      background-color: #282c34;
+      color: #abb2bf;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    pre {
+      background-color: #282c34;
+      color: #e06c75;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    .output {
+      background-color: #2d3a4b;
+      color: #79c0ff;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    .hint {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 10px;
+      margin: 15px 0;
+      color: #856404;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎯 JavaScript Promises Exercise</h1>
+  
+  <div class="exercise-card">
+    <h2>Exercise 1: Creating a Promise</h2>
+    <p>Create a promise that resolves after a delay.</p>
+    <pre>const promise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Success!');
+  }, 1000);
+});
+
+console.log('Promise created:', promise);
+console.log('Is resolved:', promise instanceof Promise);</pre>
+    <div class="output">Output: Promise created</div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 2: Promise.then() - Success Handler</h2>
+    <p>Handle the resolved value of a promise.</p>
+    <pre>const promise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Hello from Promise');
+  }, 1000);
+});
+
+promise.then(value => {
+  console.log('Resolved value:', value);
+});
+
+console.log('Promise created');</pre>
+    <div class="output">Output Order:</div>
+    <ol id="result2"></ol>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 3: Promise.catch() - Error Handler</h2>
+    <p>Handle a rejected promise.</p>
+    <pre>const promise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    reject('Something went wrong!');
+  }, 1000);
+});
+
+promise.then(() => {
+  console.log('Success');
+}).catch(error => {
+  console.log('Error:', error);
+});
+
+console.log('Promise created');</pre>
+    <div class="output">Output Order:</div>
+    <ol id="result3"></ol>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 4: Promise.all() - Multiple Promises</h2>
+    <p>Wait for multiple promises to resolve.</p>
+    <pre>const p1 = new Promise(resolve => setTimeout(() => resolve(1), 100));
+const p2 = new Promise(resolve => setTimeout(() => resolve(2), 200));
+const p3 = new Promise(resolve => setTimeout(() => resolve(3), 300));
+
+Promise.all([p1, p2, p3]).then(values => {
+  console.log('All resolved:', values);
+});</pre>
+    <div class="output">Output: All resolved = <span id="result4"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 5: Promise.any() - Any Value</h2>
+    <p>Get the first resolved value from multiple promises.</p>
+    <pre>const p1 = new Promise(resolve => setTimeout(() => resolve(1), 100));
+const p2 = new Promise(resolve => setTimeout(() => resolve(2), 200));
+
+Promise.any([p1, p2]).then(value => {
+  console.log('First resolved:', value);
+});</pre>
+    <div class="output">Output: First resolved = <span id="result5"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 6: Promise.race() - Race Promises</h2>
+    <p>Get the first resolved promise value.</p>
+    <pre>const p1 = new Promise(resolve => setTimeout(() => resolve('fast'), 100));
+const p2 = new Promise(resolve => setTimeout(() => resolve('slow'), 200));
+
+Promise.race([p1, p2]).then(value => {
+  console.log('Race result:', value);
+});</pre>
+    <div class="output">Output: Race result = <span id="result6"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 7: Promise.resolve() - Resolve Any</h2>
+    <p>Use Promise.resolve() to handle both resolved and non-resolved values.</p>
+    <pre>const value = 'not a promise';
+Promise.resolve(value).then(result => {
+  console.log('Resolved value:', result);
+});</pre>
+    <div class="output">Output: Resolved value = <span id="result7"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 8: Promise.reject() - Reject Promise</h2>
+    <p>Reject a promise and handle the error.</p>
+    <pre>Promise.reject('Error message')
+  .then(() => {
+    console.log('Success');
+  })
+  .catch(error => {
+    console.log('Caught error:', error);
+  });</pre>
+    <div class="output">Output: Caught error = <span id="result8"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 9: Promise chaining</h2>
+    <p>Chain multiple promise operations together.</p>
+    <pre>const chain = new Promise(resolve => {
+  setTimeout(() => resolve('step1'), 100);
+});
+
+chain
+  .then(value => {
+    console.log('Step 1:', value);
+    return new Promise(resolve => {
+      setTimeout(() => resolve('step2'), 100);
+    });
+  })
+  .then(value => {
+    console.log('Step 2:', value);
+  })
+  .catch(error => {
+    console.log('Error:', error);
+  });</pre>
+    <div class="output">Output Order:</div>
+    <ol id="result9"></ol>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 10: Promise with Multiple States</h2>
+    <p>Handle different promise states (pending, fulfilled, rejected).</p>
+    <pre>const promise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('Success');
+  }, 1000);
+});
+
+promise
+  .then(value => {
+    console.log('Fulfilled:', value);
+  })
+  .catch(error => {
+    console.log('Rejected:', error);
+  })
+  .finally(() => {
+    console.log('Promise completed');
+  });</pre>
+    <div class="output">Output Order:</div>
+    <ol id="result10"></ol>
+  </div>
+
+  <script>
+    // Exercise 2
+    const events2 = [];
+    (function() {
+      events2.push('Promise created');
+      const promise = new Promise((resolve, reject) => {
+        setTimeout(() => resolve('Hello from Promise'), 1000);
+      });
+      promise.then(value => events2.push('Resolved value: ' + value));
+    })();
+    document.getElementById('result2').innerHTML = events2.join('<br>');
+
+    // Exercise 3
+    const events3 = [];
+    (function() {
+      events3.push('Promise created');
+      const promise = new Promise((resolve, reject) => {
+        setTimeout(() => reject('Something went wrong!'), 1000);
+      });
+      promise.then(() => events3.push('Success'));
+      promise.catch(error => events3.push('Error: ' + error));
+    })();
+    document.getElementById('result3').innerHTML = events3.join('<br>');
+
+    // Exercise 4
+    const p1 = new Promise(resolve => setTimeout(() => resolve(1), 100));
+    const p2 = new Promise(resolve => setTimeout(() => resolve(2), 200));
+    const p3 = new Promise(resolve => setTimeout(() => resolve(3), 300));
+    Promise.all([p1, p2, p3]).then(values => {
+      document.getElementById('result4').textContent = 'All resolved: ' + JSON.stringify(values);
+    });
+
+    // Exercise 5
+    const p1 = new Promise(resolve => setTimeout(() => resolve(1), 100));
+    const p2 = new Promise(resolve => setTimeout(() => resolve(2), 200));
+    Promise.any([p1, p2]).then(value => {
+      document.getElementById('result5').textContent = 'First resolved: ' + value;
+    });
+
+    // Exercise 6
+    const p1 = new Promise(resolve => setTimeout(() => resolve('fast'), 100));
+    const p2 = new Promise(resolve => setTimeout(() => resolve('slow'), 200));
+    Promise.race([p1, p2]).then(value => {
+      document.getElementById('result6').textContent = 'Race result: ' + value;
+    });
+
+    // Exercise 7
+    const value = 'not a promise';
+    Promise.resolve(value).then(result => {
+      document.getElementById('result7').textContent = 'Resolved value: ' + result;
+    });
+
+    // Exercise 8
+    Promise.reject('Error message')
+      .then(() => {
+        document.getElementById('result8').textContent = 'Success';
+      })
+      .catch(error => {
+        document.getElementById('result8').textContent = 'Caught error: ' + error;
+      });
+
+    // Exercise 9
+    const events9 = [];
+    (function() {
+      events9.push('Step 1: Promise created');
+      const chain = new Promise(resolve => {
+        setTimeout(() => resolve('step1'), 100);
+      });
+      chain
+        .then(value => {
+          events9.push('Step 1: ' + value);
+          return new Promise(resolve => {
+            setTimeout(() => resolve('step2'), 100);
+          });
+        })
+        .then(value => {
+          events9.push('Step 2: ' + value);
+        })
+        .catch(error => {
+          events9.push('Error: ' + error);
+        });
+    })();
+    document.getElementById('result9').innerHTML = events9.join('<br>');
+
+    // Exercise 10
+    const events10 = [];
+    (function() {
+      events10.push('Promise created');
+      const promise = new Promise((resolve, reject) => {
+        setTimeout(() => resolve('Success'), 1000);
+      });
+      promise
+        .then(value => {
+          events10.push('Fulfilled: ' + value);
+        })
+        .catch(error => {
+          events10.push('Rejected: ' + error);
+        })
+        .finally(() => {
+          events10.push('Promise completed');
+        });
+    })();
+    document.getElementById('result10').innerHTML = events10.join('<br>');
+  </script>
+</body>
+</html>

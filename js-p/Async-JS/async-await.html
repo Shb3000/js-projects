@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript async/await Exercise</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .exercise-card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 { color: #333; }
+    h2 { color: #555; margin-top: 0; }
+    code {
+      background-color: #282c34;
+      color: #abb2bf;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    pre {
+      background-color: #282c34;
+      color: #e06c75;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    .output {
+      background-color: #2d3a4b;
+      color: #79c0ff;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    .hint {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 10px;
+      margin: 15px 0;
+      color: #856404;
+    }
+  </style>
+</head>
+<body>
+  <h1>⏳ JavaScript async/await Exercise</h1>
+  
+  <div class="exercise-card">
+    <h2>Exercise 1: Basic async Function</h2>
+    <p>Create a simple async function that returns a value.</p>
+    <pre>async function getMessage() {
+  return 'Hello, async world!';
+}
+
+getMessage().then(message => {
+  console.log('Message:', message);
+});</pre>
+    <div class="output">Output: Message = <span id="result1"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 2: async with setTimeout</h2>
+    <p>Use async/await with setTimeout to delay execution.</p>
+    <pre>async function delayedMessage(delay) {
+  await new Promise(resolve => setTimeout(resolve, delay));
+  return 'Delayed: ' + delay + 'ms';
+}
+
+const result = await delayedMessage(1000);
+console.log('Result:', result);</pre>
+    <div class="output">Output: Result = <span id="result2"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 3: Multiple async Functions</h2>
+    <p>Call multiple async functions and await their results.</p>
+    <pre>async function getData1() {
+  return 'Data 1';
+}
+
+async function getData2() {
+  return 'Data 2';
+}
+
+async function getData3() {
+  return 'Data 3';
+}
+
+const d1 = await getData1();
+const d2 = await getData2();
+const d3 = await getData3();
+
+console.log('Results:', [d1, d2, d3]);</pre>
+    <div class="output">Output: Results = <span id="result3"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 4: await in Loop</h2>
+    <p>Use await inside a for loop.</p>
+    <pre>async function processNumbers() {
+  const numbers = [1, 2, 3, 4, 5];
+  const result = [];
+  
+  for (let num of numbers) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+    result.push(num * 2);
+  }
+  
+  return result;
+}
+
+const result = await processNumbers();
+console.log('Doubled:', result);</pre>
+    <div class="output">Output: Doubled = <span id="result4"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 5: await with Error Handling</h2>
+    <p>Handle errors in async functions.</p>
+    <pre>async function withError() {
+  throw new Error('Something failed!');
+}
+
+try {
+  await withError();
+} catch (error) {
+  console.log('Caught error:', error.message);
+}</pre>
+    <div class="output">Output: Caught error = <span id="result5"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 6: Promise.all with async/await</h2>
+    <p>Use Promise.all to wait for multiple async operations.</p>
+    <pre>async function task1() {
+  return 'Task 1';
+}
+
+async function task2() {
+  return 'Task 2';
+}
+
+async function task3() {
+  return 'Task 3';
+}
+
+const results = await Promise.all([
+  task1(),
+  task2(),
+  task3()
+]);
+
+console.log('All results:', results);</pre>
+    <div class="output">Output: All results = <span id="result6"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 7: Promise.any with async/await</h2>
+    <p>Use Promise.any to get the first resolved value.</p>
+    <pre>async function task1() {
+  return 'First';
+}
+
+async function task2() {
+  return 'Second';
+}
+
+async function task3() {
+  return 'Third';
+}
+
+const result = await Promise.any([task1(), task2(), task3()]);
+console.log('First result:', result);</pre>
+    <div class="output">Output: First result = <span id="result7"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 8: Promise.race with async/await</h2>
+    <p>Use Promise.race to get the first resolved value.</p>
+    <pre>async function fastTask() {
+  return 'Fast';
+}
+
+async function slowTask() {
+  return 'Slow';
+}
+
+const result = await Promise.race([fastTask(), slowTask()]);
+console.log('Race result:', result);</pre>
+    <div class="output">Output: Race result = <span id="result8"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 9: Nested async Functions</h2>
+    <p>Use nested async functions with await.</p>
+    <pre>async function outer() {
+  console.log('Outer started');
+  const inner = async function() {
+    await new Promise(resolve => setTimeout(resolve, 100));
+    console.log('Inner completed');
+  };
+  const result = await inner();
+  console.log('Outer completed');
+  return result;
+}
+
+const result = await outer();
+console.log('Final result:', result);</pre>
+    <div class="output">Output Order:</div>
+    <ol id="result9"></ol>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 10: async/await Pattern</h2>
+    <p>Use the async/await pattern for clean asynchronous code.</p>
+    <pre>async function fetchData(url) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({ url: url, status: 200 });
+    }, 1000);
+  });
+}
+
+async function fetchAndProcess() {
+  try {
+    const data = await fetchData('https://example.com');
+    console.log('Fetched:', data.url, 'Status:', data.status);
+  } catch (error) {
+    console.log('Fetch failed:', error.message);
+  }
+}</pre>
+    <div class="output">Output Order:</div>
+    <ol id="result10"></ol>
+  </div>
+
+  <script>
+    // Exercise 1
+    async function getMessage() {
+      return 'Hello, async world!';
+    }
+    document.getElementById('result1').textContent = await getMessage();
+
+    // Exercise 2
+    async function delayedMessage(delay) {
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return 'Delayed: ' + delay + 'ms';
+    }
+    document.getElementById('result2').textContent = await delayedMessage(1000);
+
+    // Exercise 3
+    async function getData1() { return 'Data 1'; }
+    async function getData2() { return 'Data 2'; }
+    async function getData3() { return 'Data 3'; }
+    document.getElementById('result3').textContent = [await getData1(), await getData2(), await getData3()];
+
+    // Exercise 4
+    async function processNumbers() {
+      const numbers = [1, 2, 3, 4, 5];
+      const result = [];
+      for (let num of numbers) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        result.push(num * 2);
+      }
+      return result;
+    }
+    document.getElementById('result4').textContent = await processNumbers();
+
+    // Exercise 5
+    async function withError() {
+      throw new Error('Something failed!');
+    }
+    try {
+      await withError();
+    } catch (error) {
+      document.getElementById('result5').textContent = error.message;
+    }
+
+    // Exercise 6
+    async function task1() { return 'Task 1'; }
+    async function task2() { return 'Task 2'; }
+    async function task3() { return 'Task 3'; }
+    document.getElementById('result6').textContent = await Promise.all([task1(), task2(), task3()]);
+
+    // Exercise 7
+    async function task1() { return 'First'; }
+    async function task2() { return 'Second'; }
+    async function task3() { return 'Third'; }
+    document.getElementById('result7').textContent = await Promise.any([task1(), task2(), task3()]);
+
+    // Exercise 8
+    async function fastTask() { return 'Fast'; }
+    async function slowTask() { return 'Slow'; }
+    document.getElementById('result8').textContent = await Promise.race([fastTask(), slowTask()]);
+
+    // Exercise 9
+    const events9 = [];
+    (function() {
+      events9.push('Outer started');
+      async function inner() {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        events9.push('Inner completed');
+      }
+      const result = await inner();
+      events9.push('Outer completed');
+      return result;
+    })();
+    document.getElementById('result9').innerHTML = events9.join('<br>');
+
+    // Exercise 10
+    const events10 = [];
+    (function() {
+      events10.push('Fetching data...');
+      async function fetchData(url) {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve({ url: url, status: 200 });
+          }, 1000);
+        });
+      }
+      async function fetchAndProcess() {
+        try {
+          const data = await fetchData('https://example.com');
+          events10.push('Fetched: ' + data.url + ' Status: ' + data.status);
+        } catch (error) {
+          events10.push('Fetch failed: ' + error.message);
+        }
+      }
+      fetchAndProcess();
+    })();
+    document.getElementById('result10').innerHTML = events10.join('<br>');
+  </script>
+</body>
+</html>

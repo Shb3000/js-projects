@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Nullish Coalescing Exercise</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .exercise-card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 { color: #333; }
+    h2 { color: #555; margin-top: 0; }
+    code {
+      background-color: #282c34;
+      color: #abb2bf;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    pre {
+      background-color: #282c34;
+      color: #e06c75;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    .output {
+      background-color: #2d3a4b;
+      color: #79c0ff;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    .hint {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 10px;
+      margin: 15px 0;
+      color: #856404;
+    }
+  </style>
+</head>
+<body>
+  <h1>⚖️ JavaScript Nullish Coalescing Exercise</h1>
+  
+  <div class="exercise-card">
+    <h2>Exercise 1: Basic Nullish Coalescing</h2>
+    <p>Use the nullish coalescing operator (??) to provide a default for null or undefined.</p>
+    <pre>const value = null;
+const result = value ?? 'default';
+console.log('Result:', result);</pre>
+    <div class="output">Output:</div>
+    <p>Result: <span id="result1"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 2: Nullish Coalescing with Undefined</h2>
+    <p>Use ?? with undefined values.</p>
+    <pre>const value = undefined;
+const result = value ?? 'default';
+console.log('Result:', result);</pre>
+    <div class="output">Output:</div>
+    <p>Result: <span id="result2"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 3: Nullish Coalescing with Falsy Values</h2>
+    <p>Understand that ?? only skips null and undefined, not other falsy values.</p>
+    <pre>const value = 0;
+const result = value ?? 'default';
+console.log('Result:', result);</pre>
+    <div class="output">Output:</div>
+    <p>Result: <span id="result3"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 4: Nullish Coalescing with False</h2>
+    <p>Use ?? with boolean false.</p>
+    <pre>const value = false;
+const result = value ?? 'default';
+console.log('Result:', result);</pre>
+    <div class="output">Output:</div>
+    <p>Result: <span id="result4"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 5: Nullish Coalescing with Empty String</h2>
+    <p>Use ?? with empty string.</p>
+    <pre>const value = '';
+const result = value ?? 'default';
+console.log('Result:', result);</pre>
+    <div class="output">Output:</div>
+    <p>Result: <span id="result5"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 6: Nullish Coalescing Comparison</h2>
+    <p>Compare ?? with || operator.</p>
+    <pre>const value = null;
+const result1 = value || 'default';
+const result2 = value ?? 'default';
+
+console.log('|| Result:', result1);
+console.log('?? Result:', result2);</pre>
+    <div class="output">Output:</div>
+    <p>|| Result: <span id="result6"></span>, ?? Result: <span id="result6coalescing"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 7: Nullish Coalescing in Object Property</h2>
+    <p>Use ?? with object properties.</p>
+    <pre>const user = {
+  name: 'Alice',
+  age: null
+};
+
+const age = user.age ?? 0;
+console.log('Age:', age);</pre>
+    <div class="output">Output:</div>
+    <p>Age: <span id="result7"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 8: Nullish Coalescing with Nested Object</h2>
+    <p>Use ?? with nested object properties.</p>
+    <pre>const user = {
+  profile: {
+    bio: null,
+    age: 25
+  }
+};
+
+const bio = user.profile?.bio ?? 'No bio';
+const age = user.profile?.age ?? 0;
+console.log('Bio:', bio);
+console.log('Age:', age);</pre>
+    <div class="output">Output:</div>
+    <p>Bio: <span id="result8bio"></span>, Age: <span id="result8age"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 9: Nullish Coalescing with Default</h2>
+    <p>Use ?? with a more complex default value.</p>
+    <pre>const config = {
+  apiUrl: null,
+  timeout: 5000
+};
+
+const apiUrl = config.apiUrl ?? 'https://api.example.com';
+console.log('API URL:', apiUrl);</pre>
+    <div class="output">Output:</div>
+    <p>API URL: <span id="result9"></span></p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 10: Nullish Coalescing Priority</h2>
+    <p>Understand priority between ?? and || operators.</p>
+    <pre>const value = false;
+const result = value || 0 ?? 'default';
+console.log('Result:', result);</pre>
+    <div class="output">Output:</div>
+    <p>Result: <span id="result10"></span></p>
+  </div>
+
+  <script>
+    // Exercise 1
+    document.getElementById('result1').textContent = null ?? 'default';
+
+    // Exercise 2
+    document.getElementById('result2').textContent = undefined ?? 'default';
+
+    // Exercise 3
+    document.getElementById('result3').textContent = 0 ?? 'default';
+
+    // Exercise 4
+    document.getElementById('result4').textContent = false ?? 'default';
+
+    // Exercise 5
+    document.getElementById('result5').textContent = '' ?? 'default';
+
+    // Exercise 6
+    document.getElementById('result6').textContent = null || 'default';
+    document.getElementById('result6coalescing').textContent = null ?? 'default';
+
+    // Exercise 7
+    const user = {
+      name: 'Alice',
+      age: null
+    };
+    document.getElementById('result7').textContent = user.age ?? 0;
+
+    // Exercise 8
+    const user8 = {
+      profile: {
+        bio: null,
+        age: 25
+      }
+    };
+    document.getElementById('result8bio').textContent = user8.profile?.bio ?? 'No bio';
+    document.getElementById('result8age').textContent = user8.profile?.age ?? 0;
+
+    // Exercise 9
+    const config = {
+      apiUrl: null,
+      timeout: 5000
+    };
+    document.getElementById('result9').textContent = config.apiUrl ?? 'https://api.example.com';
+
+    // Exercise 10
+    document.getElementById('result10').textContent = false || 0 ?? 'default';
+  </script>
+</body>
+</html>

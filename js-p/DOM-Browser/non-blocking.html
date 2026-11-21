@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Non-blocking Behavior Exercise</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .exercise-card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 { color: #333; }
+    h2 { color: #555; margin-top: 0; }
+    code {
+      background-color: #282c34;
+      color: #abb2bf;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    pre {
+      background-color: #282c34;
+      color: #e06c75;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    .output {
+      background-color: #2d3a4b;
+      color: #79c0ff;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    .hint {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 10px;
+      margin: 15px 0;
+      color: #856404;
+    }
+  </style>
+</head>
+<body>
+  <h1>🚫 JavaScript Non-blocking Behavior Exercise</h1>
+  
+  <div class="exercise-card">
+    <h2>Exercise 1: Blocking vs Non-blocking Code</h2>
+    <p>Understand the difference between blocking and non-blocking operations.</p>
+    <pre>console.log('1. Start');
+const start = Date.now();
+
+// Blocking operation (synchronous)
+for (let i = 0; i < 1000000; i++) {
+  // do nothing
+}
+
+const end = Date.now();
+console.log('2. After blocking loop (duration: ' + (end - start) + 'ms)');
+
+console.log('3. After non-blocking code');</pre>
+    <div class="output">Output:</div>
+    <p>Duration: <span id="result1"></span>ms</p>
+    <div class="hint">Hint: Blocking code stops execution until it completes. Non-blocking code returns immediately.</div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 2: setTimeout is Non-blocking</h2>
+    <p>setTimeout doesn't block execution - it schedules a callback to run later.</p>
+    <pre>console.log('1. Before setTimeout');
+
+const start = Date.now();
+setTimeout(() => {
+  console.log('2. Inside setTimeout');
+}, 100);
+
+const end = Date.now();
+console.log('3. After setTimeout (duration: ' + (end - start) + 'ms)');
+
+setTimeout(() => {
+  console.log('4. Second setTimeout');
+}, 100);</pre>
+    <div class="output">Output:</div>
+    <p>Duration: <span id="result2"></span>ms</p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 3: Non-blocking I/O with Promises</h2>
+    <p>Use promises to handle non-blocking operations.</p>
+    <pre>console.log('1. Before promise');
+
+const start = Date.now();
+
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+const result = await delay(100);
+
+const end = Date.now();
+console.log('2. After delay (duration: ' + (end - start) + 'ms)');
+
+console.log('3. After promise resolves');</pre>
+    <div class="output">Output:</div>
+    <p>Duration: <span id="result3"></span>ms</p>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 4: Event Loop and Non-blocking</h2>
+    <p>See how setTimeout callbacks are processed by the event loop.</p>
+    <pre>console.log('1. Synchronous');
+
+setTimeout(() => {
+  console.log('4. setTimeout callback');
+}, 0);
+
+console.log('2. After setTimeout call');
+
+Promise.resolve('done').then(() => {
+  console.log('3. Promise callback');
+});
+
+console.log('5. After all scheduled');</pre>
+    <div class="output">Output Order:</div>
+    <ol id="result4"></ol>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 5: Non-blocking API Simulation</h2>
+    <p>Simulate non-blocking I/O operations.</p>
+    <pre>console.log('1. Request sent');
+
+// Simulate fetch-like operation
+const simulateFetch = (url) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log('3. Fetch completed');
+      resolve({ status: 'success', url: url });
+    }, 1000);
+  });
+};
+
+// Start the "fetch" without blocking
+const start = Date.now();
+simulateFetch('https://example.com').then(() => {
+  const end = Date.now();
+  console.log('4. After fetch (duration: ' + (end - start) + 'ms)');
+});
+
+console.log('2. Continue after request');
+
+setTimeout(() => {
+  console.log('5. Later task');
+}, 500);</pre>
+    <div class="output">Output:</div>
+    <ol id="result5"></ol>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 6: Multiple Non-blocking Operations</h2>
+    <p>Handle multiple non-blocking operations concurrently.</p>
+    <pre>console.log('1. Start concurrent operations');
+
+const results = [];
+
+// Simulate multiple concurrent operations
+const ops = [
+  new Promise((resolve) => setTimeout(() => resolve('op1'), 200)),
+  new Promise((resolve) => setTimeout(() => resolve('op2'), 300)),
+  new Promise((resolve) => setTimeout(() => resolve('op3'), 100))
+];
+
+Promise.all(ops).then(result => {
+  console.log('3. All operations completed');
+  console.log('4. Results:', result);
+});
+
+console.log('2. After starting all operations');
+
+setTimeout(() => {
+  console.log('5. Very late task');
+}, 500);</pre>
+    <div class="output">Output:</div>
+    <ol id="result6"></ol>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 7: async/await with setTimeout</h2>
+    <p>Use async/await to write non-blocking code cleanly.</p>
+    <pre>console.log('1. Before async');
+
+async function runNonBlocking() {
+  console.log('2. Async function started');
+  
+  await new Promise(resolve => setTimeout(resolve, 100));
+  
+  console.log('3. After await');
+}
+
+runNonBlocking().then(() => {
+  console.log('4. Async function done');
+});
+
+setTimeout(() => {
+  console.log('5. Macrotask');
+}, 100);</pre>
+    <div class="output">Output Order:</div>
+    <ol id="result7"></ol>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 8: Non-blocking with setInterval</h2>
+    <p>SetInterval schedules repeated non-blocking callbacks.</p>
+    <pre>console.log('1. Interval started');
+
+let count = 0;
+
+const intervalId = setInterval(() => {
+  count++;
+  if (count < 3) {
+    console.log('3. Interval callback #' + count);
+  } else {
+    console.log('4. Interval completed');
+    clearInterval(intervalId);
+  }
+}, 100);
+
+console.log('2. After starting interval');
+
+setTimeout(() => {
+  console.log('5. After interval finishes');
+}, 500);</pre>
+    <div class="output">Output Order:</div>
+    <ol id="result8"></ol>
+  </div>
+
+  <script>
+    // Exercise 1
+    const result1 = [];
+    (function() {
+      result1.push('1. Start');
+      const start = Date.now();
+      
+      // Blocking operation
+      for (let i = 0; i < 1000000; i++) {}
+      
+      const end = Date.now();
+      result1.push('2. After blocking loop (duration: ' + (end - start) + 'ms)');
+      
+      result1.push('3. After non-blocking code');
+    })();
+    document.getElementById('result1').innerHTML = 'Duration: <span id="result1"></span>ms';
+    document.getElementById('result1').innerHTML = 'Duration: ' + result1[1].match(/\d+/)[0] + 'ms';
+
+    // Exercise 2
+    const result2 = [];
+    (function() {
+      result2.push('1. Before setTimeout');
+      const start = Date.now();
+      setTimeout(() => { result2.push('2. Inside setTimeout'); }, 100);
+      const end = Date.now();
+      result2.push('3. After setTimeout (duration: ' + (end - start) + 'ms)');
+      setTimeout(() => result2.push('4. Second setTimeout'), 100);
+    })();
+    document.getElementById('result2').innerHTML = 'Duration: <span id="result2"></span>ms';
+    document.getElementById('result2').innerHTML = 'Duration: ' + result2[1].match(/\d+/)[0] + 'ms';
+
+    // Exercise 3
+    const result3 = [];
+    (function() {
+      result3.push('1. Before promise');
+      const start = Date.now();
+      const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+      const result = delay(100);
+      result.then(() => {
+        const end = Date.now();
+        result3.push('2. After delay (duration: ' + (end - start) + 'ms)');
+      });
+      result3.push('3. After promise resolves');
+    })();
+    document.getElementById('result3').innerHTML = 'Duration: <span id="result3"></span>ms';
+    document.getElementById('result3').innerHTML = 'Duration: ' + result3[1].match(/\d+/)[0] + 'ms';
+
+    // Exercise 4
+    const result4 = [];
+    (function() {
+      result4.push('1. Synchronous');
+      setTimeout(() => result4.push('4. setTimeout callback'), 0);
+      result4.push('2. After setTimeout call');
+      Promise.resolve('done').then(() => result4.push('3. Promise callback'));
+      result4.push('5. After all scheduled');
+    })();
+    document.getElementById('result4').innerHTML = result4.join('<br>');
+
+    // Exercise 5
+    const result5 = [];
+    (function() {
+      result5.push('1. Request sent');
+      const simulateFetch = (url) => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve({ status: 'success', url: url });
+          }, 1000);
+        });
+      };
+      const start = Date.now();
+      simulateFetch('https://example.com').then(() => {
+        const end = Date.now();
+        result5.push('3. Fetch completed');
+        result5.push('4. After fetch (duration: ' + (end - start) + 'ms)');
+      });
+      result5.push('2. Continue after request');
+      setTimeout(() => result5.push('5. Later task'), 500);
+    })();
+    document.getElementById('result5').innerHTML = result5.join('<br>');
+
+    // Exercise 6
+    const result6 = [];
+    (function() {
+      result6.push('1. Start concurrent operations');
+      const results = [];
+      const ops = [
+        new Promise((resolve) => setTimeout(() => resolve('op1'), 200)),
+        new Promise((resolve) => setTimeout(() => resolve('op2'), 300)),
+        new Promise((resolve) => setTimeout(() => resolve('op3'), 100))
+      ];
+      Promise.all(ops).then(result => {
+        result6.push('3. All operations completed');
+        result6.push('4. Results: ' + JSON.stringify(result));
+      });
+      result6.push('2. After starting all operations');
+      setTimeout(() => result6.push('5. Very late task'), 500);
+    })();
+    document.getElementById('result6').innerHTML = result6.join('<br>');
+
+    // Exercise 7
+    const result7 = [];
+    (function() {
+      result7.push('1. Before async');
+      async function runNonBlocking() {
+        result7.push('2. Async function started');
+        await new Promise(resolve => setTimeout(resolve, 100));
+        result7.push('3. After await');
+      }
+      runNonBlocking().then(() => result7.push('4. Async function done'));
+      setTimeout(() => result7.push('5. Macrotask'), 100);
+    })();
+    document.getElementById('result7').innerHTML = result7.join('<br>');
+
+    // Exercise 8
+    const result8 = [];
+    (function() {
+      result8.push('1. Interval started');
+      let count = 0;
+      const intervalId = setInterval(() => {
+        count++;
+        if (count < 3) {
+          result8.push('3. Interval callback #' + count);
+        } else {
+          result8.push('4. Interval completed');
+          clearInterval(intervalId);
+        }
+      }, 100);
+      result8.push('2. After starting interval');
+      setTimeout(() => result8.push('5. After interval finishes'), 500);
+    })();
+    document.getElementById('result8').innerHTML = result8.join('<br>');
+  </script>
+</body>
+</html>

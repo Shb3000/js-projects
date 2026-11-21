@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The this Keyword Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 750px;
+        }
+        
+        h1 {
+            color: #28a745;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .example-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        
+        .example-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .code-block .function {
+            color: #6366f1;
+        }
+        
+        .code-block .variable {
+            color: #228be6;
+        }
+        
+        .code-block .keyword {
+            color: #dc3545;
+        }
+        
+        .code-block .string {
+            color: #228be6;
+        }
+        
+        .output {
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .output strong {
+            color: #28a745;
+        }
+        
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        button {
+            padding: 15px 25px;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background: #28a745;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .info-box {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            color: #155724;
+            line-height: 1.8;
+        }
+        
+        .info-box h3 {
+            color: #155724;
+            margin-bottom: 15px;
+        }
+        
+        .info-box code {
+            background: #28a745;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>The this Keyword Practice</h1>
+        <p>Understand how <code>this</code> refers to different objects depending on how functions are called!</p>
+        
+        <div class="btn-group">
+            <button onclick="runExample1()">Example 1: Global this</button>
+            <button onclick="runExample2()">Example 2: Regular Function this</button>
+            <button onclick="runExample3()">Example 3: Object Method this</button>
+            <button onclick="runExample4()">Example 4: Arrow Function this</button>
+            <button onclick="runExample5()">Example 5: Constructor this</button>
+            <button onclick="runExample6()">Example 6: Class this</button>
+            <button onclick="runExample7()">Example 7: Event Handler this</button>
+            <button onclick="runExample8()">Example 8: this.call/apply/bind</button>
+        </div>
+        
+        <div id="output" class="output">
+            <strong>Click a button to see different this keyword examples!</strong>
+        </div>
+        
+        <div class="info-box">
+            <h3>🎯 Understanding this</h3>
+            <p>
+                The keyword <code>this</code> refers to the object that called the function. Its value depends on how the function is invoked:
+            </p>
+            <ul>
+                <li><strong>Global scope:</strong> <code>this</code> refers to <code>window</code> object</li>
+                <li><strong>Regular function:</strong> <code>this</code> refers to the object that called it</li>
+                <li><strong>Object method:</strong> <code>this</code> refers to the object</li>
+                <li><strong>Arrow function:</strong> <code>this</code> inherits from enclosing function (cannot be changed)</li>
+                <li><strong>Constructor:</strong> <code>this</code> refers to the new object being created</li>
+                <li><strong>Class method:</strong> <code>this</code> refers to the instance</li>
+                <li><strong>Event handler:</strong> <code>this</code> refers to the element that triggered the event</li>
+            </ul>
+        </div>
+        
+        <div class="code-block">
+            <span class="comment">// Examples will appear here...</span>
+        </div>
+    </div>
+    
+    <script>
+        // Example 1: Global this
+        function runExample1() {
+            const code = `
+<span class="comment">// Example 1: Global this (in browser)</span>
+console.log(this); // This is the window object
+console.log(typeof this); // "object"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: window object</strong><br>
+                               In a browser, global <code>this</code> refers to the <code>window</code> object.<br>
+                               In Node.js, it refers to the global object.`;
+        }
+        
+        // Example 2: Regular function this
+        function runExample2() {
+            const code = `
+<span class="comment">// Example 2: Regular function this</span>
+function greet() {
+    console.log('Greeted by:', this.name);
+}
+
+const person = { name: 'Alice' };
+greet.call(person); // "Greeted by: Alice"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "Greeted by: Alice"</strong><br>
+                               The <code>this</code> inside the function refers to <code>person</code> object.<br>
+                               We used <code>.call()</code> to explicitly set <code>this</code> to <code>person</code>.`;
+        }
+        
+        // Example 3: Object method this
+        function runExample3() {
+            const code = `
+<span class="comment">// Example 3: Object method this</span>
+const person = {
+    name: 'Alice',
+    greet() {
+        console.log('Hello, ' + this.name);
+    }
+};
+
+person.greet(); // "Hello, Alice"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "Hello, Alice"</strong><br>
+                               Inside the method, <code>this</code> automatically refers to the <code>person</code> object.<br>
+                               No need to use <code>.call()</code> or <code>.apply()</code>.`;
+        }
+        
+        // Example 4: Arrow function this
+        function runExample4() {
+            const code = `
+<span class="comment">// Example 4: Arrow function this</span>
+const person = {
+    name: 'Alice',
+    greet: function() {
+        const message = () => {
+            console.log('Arrow function: ' + this.name);
+        };
+        message();
+    }
+};
+
+person.greet(); // "Arrow function: Alice"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "Arrow function: Alice"</strong><br>
+                               The arrow function inherits <code>this</code> from <code>person.greet</code>.<br>
+                               <strong>Important:</strong> Arrow functions cannot be used as constructors!</`;
+        }
+        
+        // Example 5: Constructor this
+        function runExample5() {
+            const code = `
+<span class="comment">// Example 5: Constructor this</span>
+function Person(name) {
+    this.name = name;
+    this.greet = function() {
+        console.log('Hi, I am ' + this.name);
+    };
+}
+
+const alice = new Person('Alice');
+alice.greet(); // "Hi, I am Alice"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "Hi, I am Alice"</strong><br>
+                               In a constructor, <code>this</code> refers to the new object being created.<br>
+                               We assign properties to <code>this</code> to create instance properties.`;
+        }
+        
+        // Example 6: Class this
+        function runExample6() {
+            const code = `
+<span class="comment">// Example 6: Class this</span>
+class Person {
+    constructor(name) {
+        this.name = name;
+    }
+    
+    greet() {
+        console.log('Hello, ' + this.name);
+    }
+}
+
+const alice = new Person('Alice');
+alice.greet(); // "Hello, Alice"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "Hello, Alice"</strong><br>
+                               Classes provide a cleaner syntax for constructors.<br>
+                               <code>this</code> still refers to the instance object.`;
+        }
+        
+        // Example 7: Event handler this
+        function runExample7() {
+            const code = `
+<span class="comment">// Example 7: Event handler this</span>
+const person = {
+    name: 'Alice',
+    greet: function() {
+        console.log('Regular function: ' + this.name);
+    }
+};
+
+const element = {
+    name: 'Bob',
+    handleClick: function() {
+        person.greet.call(this); // This calls greet with element as this
+    }
+};
+
+element.handleClick(); // "Regular function: Bob"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "Regular function: Bob"</strong><br>
+                               The event handler's <code>this</code> refers to <code>element</code>.<br>
+                               We used <code>.call(this)</code> to temporarily change <code>this</code> inside <code>greet</code>.`;
+        }
+        
+        // Example 8: this.call/apply/bind
+        function runExample8() {
+            const code = `
+<span class="comment">// Example 8: this.call/apply/bind</span>
+function add(a, b) {
+    return a + b;
+}
+
+const obj1 = { a: 10 };
+const obj2 = { a: 20 };
+
+// Using .call()
+console.log(add.call(obj1, obj2.a)); // 30
+
+// Using .apply()
+console.log(add.apply(obj1, [obj2.a])); // 30
+
+// Using .bind()
+const adder = add.bind(obj1);
+console.log(adder(obj2.a)); // 30
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Results: 30, 30, 30</strong><br>
+                               These methods allow you to control <code>this</code> in functions.<br>
+                               <code>.call()</code> and <code>.apply()</code> execute immediately, <code>.bind()</code> returns a new function.`;
+        }
+        
+        // Additional examples
+        function runExample9() {
+            const code = `
+<span class="comment">// Example 9: Using .apply() with array</span>
+function multiply(a, b, c) {
+    console.log(a + ' * ' + b + ' * ' + c + ' = ' + (a * b * c));
+}
+
+const values = [2, 3, 4];
+multiply.apply(null, values); // 2 * 3 * 4 = 24
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "2 * 3 * 4 = 24"</strong><br>
+                               <code>.apply()</code> takes an array of arguments.<br>
+                               <code>undefined</code> for first argument means <code>this</code> is <code>window</code>.`;
+        }
+        
+        function runExample10() {
+            const code = `
+<span class="comment">// Example 10: Using .bind() to create custom this</span>
+function greet(name) {
+    console.log('Hello ' + name + ', welcome to ' + this.place);
+}
+
+const world = { place: 'JavaScript Land' };
+
+// Bind the function to the object
+greet.bind(world, 'Alice')('Alice'); // "Hello Alice, welcome to JavaScript Land"
+`;
+            
+            const output = document.getElementById('output');
+            document.querySelector('.code-block').innerHTML = code;
+            
+            output.innerHTML = `<strong>Result: "Hello Alice, welcome to JavaScript Land"</strong><br>
+                               <code>.bind()</code> returns a new function with <code>this</code> set to <code>world</code>.<br>
+                               <code>.bind()</code> does NOT execute the function immediately.`;
+        }
+        
+        // Run all examples
+        const examples = [
+            { fn: runExample1, title: 'Example 1: Global this' },
+            { fn: runExample2, title: 'Example 2: Regular Function this' },
+            { fn: runExample3, title: 'Example 3: Object Method this' },
+            { fn: runExample4, title: 'Example 4: Arrow Function this' },
+            { fn: runExample5, title: 'Example 5: Constructor this' },
+            { fn: runExample6, title: 'Example 6: Class this' },
+            { fn: runExample7, title: 'Example 7: Event Handler this' },
+            { fn: runExample8, title: 'Example 8: this.call/apply/bind' },
+            { fn: runExample9, title: 'Example 9: Using .apply() with array' },
+            { fn: runExample10, title: 'Example 10: Using .bind() to create custom this' }
+        ];
+        
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                const example = examples.find(ex => ex.title === btn.textContent.trim());
+                if (example) {
+                    example.fn();
+                }
+            });
+        });
+        
+        // Run all examples on page load
+        window.addEventListener('load', () => {
+            let count = 0;
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach((btn, index) => {
+                if (examples[index]) {
+                    setTimeout(() => {
+                        const example = examples[index];
+                        const title = btn.textContent.trim().split(':')[1];
+                        const output = document.getElementById('output');
+                        output.innerHTML = `<strong>${title}:</strong> See code block for details...`;
+                    }, count * 200);
+                    count++;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

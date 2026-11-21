@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript JSON Exercise</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .exercise-card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 { color: #333; }
+    h2 { color: #555; margin-top: 0; }
+    code {
+      background-color: #282c34;
+      color: #abb2bf;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    pre {
+      background-color: #282c34;
+      color: #e06c75;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    .output {
+      background-color: #2d3a4b;
+      color: #79c0ff;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+    .hint {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 10px;
+      margin: 15px 0;
+      color: #856404;
+    }
+  </style>
+</head>
+<body>
+  <h1>📝 JavaScript JSON Exercise</h1>
+  
+  <div class="exercise-card">
+    <h2>Exercise 1: JSON.stringify() - Stringify an Object</h2>
+    <p>Convert an object to a JSON string using <code>JSON.stringify()</code>.</p>
+    <pre>const person = {
+  name: 'Alice',
+  age: 25,
+  isStudent: true
+};
+const json = JSON.stringify(person);</pre>
+    <div class="output">Output: JSON string = <span id="result1"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 2: JSON.parse() - Parse JSON String</h2>
+    <p>Convert a JSON string back to an object using <code>JSON.parse()</code>.</p>
+    <pre>const jsonString = '{"name": "Bob", "age": 30, "city": "NYC"}';
+const person = JSON.parse(jsonString);</pre>
+    <div class="output">Output: name = <span id="result2name"></span>, age = <span id="result2age"></span>, city = <span id="result2city"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 3: stringify with Spaces</h2>
+    <p>Stringify an object with pretty-printed JSON (spaces after colons and commas).</p>
+    <pre>const product = {
+  title: 'Laptop',
+  price: 999.99,
+  inStock: true
+};
+const prettyJson = JSON.stringify(product, null, 2);</pre>
+    <div class="output">Output: Pretty JSON = <span id="result3"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 4: parse with Reviver Function</h2>
+    <p>Parse a JSON string using a reviver function to transform data.</p>
+    <pre>const data = '{"name":"John","age":30,"skills":["JS","React"]}';
+const parsed = JSON.parse(data, (key, value) => {
+  if (typeof value === 'string') {
+    return value.toUpperCase();
+  }
+  return value;
+});</pre>
+    <div class="output">Output: name = <span id="result4name"></span>, age = <span id="result4age"></span>, skills = <span id="result4skills"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 5: Stringify with Replacer</h2>
+    <p>Stringify an object using a replacer function to exclude certain properties.</p>
+    <pre>const user = {
+  name: 'Alice',
+  age: 25,
+  address: { city: 'NYC', zip: '10001' }
+};
+const json = JSON.stringify(user, (key, value) => {
+  return key !== 'address';
+});</pre>
+    <div class="output">Output: JSON (no address) = <span id="result5"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 6: parse with Reviver (Number Conversion)</h2>
+    <p>Use a reviver function to convert string numbers to actual numbers.</p>
+    <pre>const data = '{"price":"100","quantity":"5"}';
+const parsed = JSON.parse(data, function(key, value) {
+  if (typeof value === 'string' && !isNaN(value)) {
+    return parseFloat(value);
+  }
+  return value;
+});</pre>
+    <div class="output">Output: price = <span id="result6price"></span>, quantity = <span id="result6quantity"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 7: Circular Reference Handling</h2>
+    <p>Try to stringify an object with a circular reference (will cause error).</p>
+    <pre>const circular = {
+  name: 'Test',
+  self: null
+};
+circular.self = circular;
+try {
+  const json = JSON.stringify(circular);
+} catch (e) {
+  console.log('Circular reference error:', e.message);
+}</pre>
+    <div class="output">Output: Error occurred = <span id="result7"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 8: Deep Clone with JSON</h2>
+    <p>Use JSON.stringify and JSON.parse to create a deep copy of a plain object.</p>
+    <pre>const original = {
+  name: 'Alice',
+  address: {
+    city: 'NYC',
+    zip: '10001'
+  },
+  hobbies: ['reading', 'coding']
+};
+const copy = JSON.parse(JSON.stringify(original));
+copy.address.zip = '55555';</pre>
+    <div class="output">Output: Original zip = <span id="result8original"></span>, Copy zip = <span id="result8copy"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 9: minify JSON</h2>
+    <p>Create a minified JSON string (no spaces).</p>
+    <pre>const config = {
+  apiUrl: 'https://api.example.com',
+  timeout: 5000,
+  debug: false
+};
+const minified = JSON.stringify(config);</pre>
+    <div class="output">Output: Minified JSON = <span id="result9"></span></div>
+  </div>
+
+  <div class="exercise-card">
+    <h2>Exercise 10: Parse JSON with Reviver (Custom Objects)</h2>
+    <p>Use a reviver to convert string keys to numbers and values to specific types.</p>
+    <pre>const data = '{"id":"100","name":"Bob","age":"25"}';
+const parsed = JSON.parse(data, function(key, value) {
+  return {
+    [key]: value === 'true' ? true : value === 'false' ? false : 
+           value === 'null' ? null : 
+           value === 'undefined' ? undefined :
+           typeof value === 'string' && !isNaN(value) ? parseInt(value) : value
+  };
+});</pre>
+    <div class="output">Output: id = <span id="result10id"></span>, name = <span id="result10name"></span>, age = <span id="result10age"></span></div>
+  </div>
+
+  <script>
+    // Exercise 1
+    const person = {
+      name: 'Alice',
+      age: 25,
+      isStudent: true
+    };
+    const json = JSON.stringify(person);
+    document.getElementById('result1').textContent = json;
+
+    // Exercise 2
+    const jsonString = '{"name": "Bob", "age": 30, "city": "NYC"}';
+    const person2 = JSON.parse(jsonString);
+    document.getElementById('result2name').textContent = person2.name;
+    document.getElementById('result2age').textContent = person2.age;
+    document.getElementById('result2city').textContent = person2.city;
+
+    // Exercise 3
+    const product = {
+      title: 'Laptop',
+      price: 999.99,
+      inStock: true
+    };
+    const prettyJson = JSON.stringify(product, null, 2);
+    document.getElementById('result3').textContent = prettyJson;
+
+    // Exercise 4
+    const data = '{"name":"John","age":30,"skills":["JS","React"]}';
+    const parsed = JSON.parse(data, (key, value) => {
+      if (typeof value === 'string') {
+        return value.toUpperCase();
+      }
+      return value;
+    });
+    document.getElementById('result4name').textContent = parsed.name;
+    document.getElementById('result4age').textContent = parsed.age;
+    document.getElementById('result4skills').textContent = JSON.stringify(parsed.skills);
+
+    // Exercise 5
+    const user = {
+      name: 'Alice',
+      age: 25,
+      address: { city: 'NYC', zip: '10001' }
+    };
+    const json5 = JSON.stringify(user, (key, value) => {
+      return key !== 'address';
+    });
+    document.getElementById('result5').textContent = json5;
+
+    // Exercise 6
+    const data6 = '{"price":"100","quantity":"5"}';
+    const parsed6 = JSON.parse(data6, function(key, value) {
+      if (typeof value === 'string' && !isNaN(value)) {
+        return parseFloat(value);
+      }
+      return value;
+    });
+    document.getElementById('result6price').textContent = parsed6.price;
+    document.getElementById('result6quantity').textContent = parsed6.quantity;
+
+    // Exercise 7
+    const circular = {
+      name: 'Test',
+      self: null
+    };
+    circular.self = circular;
+    try {
+      const json7 = JSON.stringify(circular);
+    } catch (e) {
+      document.getElementById('result7').textContent = 'Error: "Cannot convert object with circular reference to JSON"';
+    }
+
+    // Exercise 8
+    const original = {
+      name: 'Alice',
+      address: {
+        city: 'NYC',
+        zip: '10001'
+      },
+      hobbies: ['reading', 'coding']
+    };
+    const copy = JSON.parse(JSON.stringify(original));
+    copy.address.zip = '55555';
+    document.getElementById('result8original').textContent = original.address.zip;
+    document.getElementById('result8copy').textContent = copy.address.zip;
+
+    // Exercise 9
+    const config = {
+      apiUrl: 'https://api.example.com',
+      timeout: 5000,
+      debug: false
+    };
+    const minified = JSON.stringify(config);
+    document.getElementById('result9').textContent = minified;
+
+    // Exercise 10
+    const data10 = '{"id":"100","name":"Bob","age":"25"}';
+    const parsed10 = JSON.parse(data10, function(key, value) {
+      return {
+        [key]: value === 'true' ? true : value === 'false' ? false : 
+               value === 'null' ? null : 
+               value === 'undefined' ? undefined :
+               typeof value === 'string' && !isNaN(value) ? parseInt(value) : value
+      };
+    });
+    document.getElementById('result10id').textContent = parsed10.id;
+    document.getElementById('result10name').textContent = parsed10.name;
+    document.getElementById('result10age').textContent = parsed10.age;
+  </script>
+</body>
+</html>
